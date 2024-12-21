@@ -3,7 +3,7 @@ function App() {
   return (
     <>
     <h1 className="text-3xl">
-      Deav Poll !   
+      Dev Poll !   
     </h1>
     </>
   )
