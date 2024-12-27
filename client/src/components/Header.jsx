@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -18,8 +18,8 @@ export default function Header({AUTH}) {
   };
 
   return (
-    <header className="bg-white shadow fixed left-0 top-0 w-full h-16 flex justify-between items-center px-5 xl:px-[333px]">
-      <h1 className="font-bold text-xl">DEVPOLL</h1>
+    <header className="bg-white z-50 shadow fixed left-0 top-0 w-full h-16 flex justify-between items-center px-5 xl:px-[333px]">
+      <NavLink to='/' className="font-bold text-xl">DEVPOLL</NavLink>
       {!AUTH && (
         <div className="flex gap-x-3">
           <Button

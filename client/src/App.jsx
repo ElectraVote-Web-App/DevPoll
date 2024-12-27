@@ -4,18 +4,19 @@ import AuthLayout from "./layouts/AuthLayout"
 import GuestLayout from "./layouts/GuestLayout"
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
+import PollsPage from "./pages/PollsPage";
 
 function App() {
   // until we implement authentication with context api or react-query
-  const AUTH = false;
+  const AUTH = true;
 
   return (
     <BrowserRouter>
       <Routes>
 
         <Route element={<SharedLayout AUTH={AUTH} />} >
-          <Route path="/" element={<Home/>} />
-          <Route path="/polls" element={<h1>Polls Page</h1>} />
+          <Route path="/" element={<Home AUTH={AUTH} />} />
+          <Route path="/polls" element={<PollsPage/>} />
           <Route path="/polls/:id" element={<h1>Show Poll Page</h1>} />
         </Route>
 
