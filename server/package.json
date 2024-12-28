@@ -6,18 +6,21 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "test": "",
-    "miration" : ""
+    "migration": "npx sequelize-cli db:migrate",
+    "rollback": "npx sequelize-cli db:migrate:undo",
+    "rollback-all": "npx sequelize-cli db:migrate:undo:all"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
+    "mysql2": "^3.11.5",
     "sequelize": "^6.37.5"
   },
   "devDependencies": {
