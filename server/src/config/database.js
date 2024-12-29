@@ -1,5 +1,5 @@
-import mysql from 'mysql';
-import dotenv from 'dotenv';
+const mysql = require('mysql');
+const dotenv = require('dotenv');
 // console.log("Current directory:", process.cwd());
 
 dotenv.config({ path: "server/.env" });
@@ -21,4 +21,4 @@ db.connect((err) => {
     console.log("Connected to Mysql Datbase");
 })
 
-export default db;
+module.exports = db;
