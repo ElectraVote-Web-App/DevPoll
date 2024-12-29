@@ -19,7 +19,7 @@ export default function Header({AUTH}) {
 
   return (
     <header className="bg-white z-50 shadow fixed left-0 top-0 w-full h-16 flex justify-between items-center px-5 xl:px-[333px]">
-      <NavLink to='/' className="font-bold text-xl">DEVPOLL</NavLink>
+      <NavLink to='/' className="font-bold text-xl text-black">DEVPOLL</NavLink>
       {!AUTH && (
         <div className="flex gap-x-3">
           <Button
@@ -55,6 +55,9 @@ export default function Header({AUTH}) {
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link to="/me/settings">Settings</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/about">About</Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={logout} className="cursor-pointer">
               Logout

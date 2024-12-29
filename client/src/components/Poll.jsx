@@ -1,8 +1,9 @@
 import { Button } from "./ui/button"
 import PropTypes from "prop-types"
 import PollProfile from "./PollProfile"
+import { Link } from "react-router-dom"
 
-const Poll = ({status}) => {
+const Poll = ({status, id}) => {
 
   return (
     <div className="bg-blue-500 p-3 rounded-2xl space-y-4 hover:shadow-3xl transition duration-300">
@@ -31,8 +32,8 @@ const Poll = ({status}) => {
         What is the Most Popular P.L?
         </p>
         <span className="text-white text-xs">5 Minutes ago</span>
-        <Button className='flex w-full rounded-xl bg-[#277EBD] hover:bg-white hover:text-[#277EBD] shadow-none text-white mt-3'>
-          Tap to see
+        <Button asChild className='flex w-full rounded-xl bg-[#277EBD] hover:bg-white hover:text-[#277EBD] shadow-none text-white mt-3'>
+          <Link to={`/polls/${id}`}>Tap to see</Link>
         </Button>
       </div>
   )
@@ -40,5 +41,6 @@ const Poll = ({status}) => {
 export default Poll
 
 Poll.propTypes = {
-  status: PropTypes.bool.isRequired,
+  status: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired
 };

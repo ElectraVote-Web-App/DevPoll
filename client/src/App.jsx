@@ -5,6 +5,7 @@ import GuestLayout from "./layouts/GuestLayout"
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 import PollsPage from "./pages/PollsPage";
+import PollPage from "./pages/PollPage";
 
 function App() {
   // until we implement authentication with context api or react-query
@@ -17,7 +18,8 @@ function App() {
         <Route element={<SharedLayout AUTH={AUTH} />} >
           <Route path="/" element={<Home AUTH={AUTH} />} />
           <Route path="/polls" element={<PollsPage/>} />
-          <Route path="/polls/:id" element={<h1>Show Poll Page</h1>} />
+          <Route path="/polls/:id" element={<PollPage/>} />
+          <Route path="/about" element={<h1>Write Docs here...</h1>} />
         </Route>
 
         <Route element={<AuthLayout AUTH={AUTH} />} >

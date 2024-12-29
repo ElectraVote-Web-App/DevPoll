@@ -55,7 +55,7 @@ const Home = ({ AUTH }) => {
                 </>
               ) : (
                 <>
-                  Login first <br /> to participate in <br /> Polls!
+                  Login first <br /> to participate <br /> in Polls!
                 </>
               )}
             </h2>
