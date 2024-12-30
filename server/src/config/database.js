@@ -1,8 +1,8 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const dotenv = require('dotenv');
 // console.log("Current directory:", process.cwd());
 
-dotenv.config({ path: "server/.env" });
+dotenv.config();
 
 
 const db = mysql.createConnection({
