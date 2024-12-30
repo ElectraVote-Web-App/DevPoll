@@ -10,6 +10,8 @@ export const VoteBars = () => {
     },
   ];
 
+  const error = "Please select an option first";
+
   return (
     <form className={`space-y-1`}>
       {votes?.map((vote) => (
@@ -40,6 +42,7 @@ export const VoteBars = () => {
           </label>
         </div>
       ))}
+      {error && (<p className="text-[0.8rem] font-medium text-destructive">{error}</p>)}
     </form>
   );
 };

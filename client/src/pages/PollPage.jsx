@@ -18,7 +18,7 @@ function PollPage() {
   const navigate = useNavigate();
   const navigateBack = () => {
     const hasHistory = window.history.state !== null;
-    navigate(hasHistory ? -1 : "/");
+    navigate(hasHistory ? -1 : "/polls");
   };
   const {id} = useParams();
   const pollType = id % 2 === 0 ?"vote" : "sondage";

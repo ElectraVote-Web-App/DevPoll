@@ -15,6 +15,8 @@ export const SondageBars = () => {
     
   ];
 
+  const error = "Please select an option first";
+
 
   return (
     <form
@@ -57,6 +59,7 @@ export const SondageBars = () => {
           ></div>
         </div>
       ))}
+      {error && (<p className="text-[0.8rem] font-medium text-destructive">{error}</p>)}
     </form>
   )
 }
