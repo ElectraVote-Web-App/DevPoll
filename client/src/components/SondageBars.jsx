@@ -53,7 +53,7 @@ export const SondageBars = () => {
           </label>
           <div
             className={`absolute left-0 top-0 h-full rounded-xl transition-all duration-700 ease-in-out ${
-              Number(vote.percentage) > 50 ? "bg-blue-400" : Number(vote.percentage) === 50 ? "bg-gray-300" :
+              Number(vote.percentage) > 50 ? "bg-[#c5e0fc]" : Number(vote.percentage) === 50 ? "bg-gray-300" :
               Number(vote.percentage) < 50 ? "bg-gray-300" : ""}`}
             style={{ width: `${vote.percentage}%` }}
           ></div>
