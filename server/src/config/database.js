@@ -1,16 +1,18 @@
-import mysql from 'mysql';
-import dotenv from 'dotenv';
-// console.log("Current directory:", process.cwd());
+const mysql =  require('mysql');
+const dotenv =  require('dotenv');
 
-dotenv.config({ path: "server/.env" });
+require("dotenv").config();
 
 
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
 db.connect((err) => {
@@ -21,4 +23,4 @@ db.connect((err) => {
     console.log("Connected to Mysql Datbase");
 })
 
-export default db;
+module.exports = db;
