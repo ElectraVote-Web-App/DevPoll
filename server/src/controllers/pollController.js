@@ -32,6 +32,7 @@ const getPolls = (req, res) => {
       if (!polls[row.poll_id]) {
         polls[row.poll_id] = {
           id: row.poll_id,
+          title: row.title,
           end_time: row.end_time,
           description: row.description,
           type: row.type,
@@ -56,13 +57,12 @@ const getPolls = (req, res) => {
   });
 };
 
-
 const createPoll = (req, res) => {
-  const { end_time, description, type, created_by, options } = req.body;
+  const { title, end_time, description, type, created_by, options } = req.body;
 
   // Ensure `options` is an array
-  if (!Array.isArray(options) || options.length < 2) {
-    return res.status(400).json({ error: "A poll must contains at least 2 options" });
+  if (!title || !Array.isArray(options) || options.length < 2) {
+    return res.status(400).json({ error: "Title and at least 2 options are required" });
   }
 
   // Check for duplicate options
@@ -73,13 +73,13 @@ const createPoll = (req, res) => {
 
   // Insert poll into the database
   const pollQuery = `
-    INSERT INTO polls (end_time, description, type, created_by, created_at)
-    VALUES (?, ?, ?, ?, NOW())
+    INSERT INTO polls (title, end_time, description, type, created_by, created_at)
+    VALUES (?, ?, ?, ?, ?, NOW())
   `;
 
   db.query(
     pollQuery,
-    [end_time, description, type, created_by],
+    [title, end_time, description, type, created_by],
     (err, pollResult) => {
       if (err) {
         console.error("Error inserting poll:", err.message);
@@ -112,54 +112,53 @@ const createPoll = (req, res) => {
   );
 };
 
-
-
 const editPoll = (req, res) => {
   const pollId = req.params.id;
-  const { end_time, description, type, options } = req.body;
+  const { title, end_time, description, type, options } = req.body;
 
-  if (!pollId || !end_time || !type || !Array.isArray(options) || options.length === 0) {
-      return res.status(400).json({ message: "Invalid input!" });
+  if (!pollId || !title || !end_time || !type || !Array.isArray(options) || options.length === 0) {
+    return res.status(400).json({ message: "Invalid input!" });
   }
 
   // Update poll details
   const updatePollQuery = `
-      UPDATE polls 
-      SET end_time = ?, description = ?, type = ?
-      WHERE id = ?`;
+    UPDATE polls 
+    SET title = ?, end_time = ?, description = ?, type = ?
+    WHERE id = ?
+  `;
 
-  db.query(updatePollQuery, [end_time, description, type, pollId], (err, result) => {
-      if (err) {
-          console.error(err);
-          return res.status(500).json({ message: "Failed to update poll" });
+  db.query(updatePollQuery, [title, end_time, description, type, pollId], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Failed to update poll" });
+    }
+
+    // Check if poll exists
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Poll not found" });
+    }
+
+    // Handle poll options
+    const uniqueOptions = [...new Set(options)];
+    const deleteOldOptionsQuery = `DELETE FROM options WHERE poll_id = ?`;
+    const insertNewOptionsQuery = `INSERT INTO options (content, poll_id) VALUES ?`;
+
+    db.query(deleteOldOptionsQuery, [pollId], (deleteErr) => {
+      if (deleteErr) {
+        console.error(deleteErr);
+        return res.status(500).json({ message: "Failed to update poll options" });
       }
 
-      // Check if poll exists
-      if (result.affectedRows === 0) {
-          return res.status(404).json({ message: "Poll not found" });
-      }
+      const newOptions = uniqueOptions.map((option) => [option, pollId]);
+      db.query(insertNewOptionsQuery, [newOptions], (insertErr) => {
+        if (insertErr) {
+          console.error(insertErr);
+          return res.status(500).json({ message: "Failed to add new options" });
+        }
 
-      // Handle poll options
-      const uniqueOptions = [...new Set(options)];
-      const deleteOldOptionsQuery = `DELETE FROM options WHERE poll_id = ?`;
-      const insertNewOptionsQuery = `INSERT INTO options (content, poll_id) VALUES ?`;
-
-      db.query(deleteOldOptionsQuery, [pollId], (deleteErr) => {
-          if (deleteErr) {
-              console.error(deleteErr);
-              return res.status(500).json({ message: "Failed to update poll options" });
-          }
-
-          const newOptions = uniqueOptions.map(option => [option, pollId]);
-          db.query(insertNewOptionsQuery, [newOptions], (insertErr) => {
-              if (insertErr) {
-                  console.error(insertErr);
-                  return res.status(500).json({ message: "Failed to add new options" });
-              }
-
-              return res.status(200).json({ message: "Poll and options updated successfully" });
-          });
+        return res.status(200).json({ message: "Poll and options updated successfully" });
       });
+    });
   });
 };
 

@@ -13,6 +13,7 @@ module.exports = {
       title: {
         type: Sequelize.STRING,
         allowNull: false,
+        defaultValue: ''
       },
       end_time: {
         type: Sequelize.DATE,
@@ -26,7 +27,7 @@ module.exports = {
         allowNull: true,
       },
       type: {
-        type: Sequelize.ENUM('sou', 'vote'),
+        type: Sequelize.ENUM('sondage', 'vote'),
         allowNull: false,
       },
       created_at: {
