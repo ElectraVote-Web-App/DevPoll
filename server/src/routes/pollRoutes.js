@@ -1,5 +1,5 @@
 const express = require("express");
-const { getPolls, createPoll, editPoll, deletePoll } = require("../controllers/pollController");
+const { getPolls, createPoll, editPoll, deletePoll, paginatPolls } = require("../controllers/pollController");
 
 const router = express.Router();
 

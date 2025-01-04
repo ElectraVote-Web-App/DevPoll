@@ -1,11 +1,16 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
 const pollRoutes = require("./routes/pollRoutes");
 
 
 dotenv.config();
 const app = express();
 
+// Add Client Port to .env file
+app.use(cors({
+  origin: `http://localhost:${process.env.CLIENT_PORT}`,
+}));
 app.use(express.json());
 
 // Routes

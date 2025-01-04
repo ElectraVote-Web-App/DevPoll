@@ -6,18 +6,30 @@ import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 import PollsPage from "./pages/PollsPage";
 import PollPage from "./pages/PollPage";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: 0,
+    },
+  },
+});
 
 function App() {
   // until we implement authentication with context api or react-query
   const AUTH = true;
 
   return (
+    <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
 
         <Route element={<SharedLayout AUTH={AUTH} />} >
           <Route path="/" element={<Home AUTH={AUTH} />} />
-          <Route path="/polls" element={<PollsPage/>} />
+          <Route path="/polls" element={<PollsPage AUTH={AUTH}/>} />
           <Route path="/polls/:id" element={<PollPage/>} />
           <Route path="/about" element={<h1>Write Docs here...</h1>} />
         </Route>
@@ -39,6 +51,7 @@ function App() {
 
       </Routes>
     </BrowserRouter>
+    </QueryClientProvider>
   )
 }
 
