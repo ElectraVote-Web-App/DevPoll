@@ -9,13 +9,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { LogoutDialog } from "@/components/logout-dialog";
+import { useAuth } from "@/context/AuthContext";
 import PropTypes from "prop-types";
 
-export default function Header({AUTH}) {
-  const username = "Cristina";
-  const logout = () => {
-    alert("Logout");
-  };
+export default function Header({ AUTH }) {
+  const { user, logout: handleLogout } = useAuth();
+
+  const username = user ? user.username : "";
 
   return (
     <header className="bg-white z-50 shadow fixed left-0 top-0 w-full h-16 flex justify-between items-center px-5 xl:px-[333px]">
@@ -41,7 +42,7 @@ export default function Header({AUTH}) {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>
-              <AvatarImage src="./public/avatars/avatar6.png" />
+              <AvatarImage src={`./public/avatars/${user.img}`} />
               <AvatarFallback>
                 {username.slice(0, 2).toUpperCase()}
               </AvatarFallback>
@@ -56,8 +57,8 @@ export default function Header({AUTH}) {
             <DropdownMenuItem>
               <Link to="/me/settings">Settings</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={logout} className="cursor-pointer">
-              Logout
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <LogoutDialog onConfirm={handleLogout} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
