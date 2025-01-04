@@ -12,6 +12,12 @@ import { Toaster } from "@/components/ui/toaster";
 import PollPage from "./pages/PollPage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import CreatePoll from "./pages/CreatePoll";
+import EditPoll from "./pages/EditPoll";
+import SettingsLayout from "./components/forms/SettingsLayout";
+import SettingsProfilePage from "./components/forms/SettingsProfilePage";
+import SettingsNotificationsPage from "./components/forms/notifications/SettingsNotificationsPage";
+import SettingsAccountPage from "./components/forms/account/SettingsAccountPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,9 +48,13 @@ function App() {
 
         <Route element={<AuthLayout AUTH={AUTH} />} >
           <Route path="/polls/create" element={<CreatePoll/>} />
-          <Route path="/polls/:id/edit" element={<h1>Edit Poll Page</h1>} />
-          <Route path="/me" element={<h1>Profile Page</h1>} />
-          <Route path="/me/settings" element={<h1>Profile Settings Page</h1>} />
+          <Route path="/polls/edit/:id" element={<EditPoll/>} />
+          <Route path="/me" element={<ProfilePage/>} />
+          <Route path="/me/settings" element={<SettingsLayout/>}>
+            <Route path="" element={<SettingsProfilePage/>}/>
+            <Route path="notifications" element={<SettingsNotificationsPage/>}/>
+            <Route path="account" element={<SettingsAccountPage/>}></Route>
+          </Route>
           <Route path="/activities" element={<h1>Profile Page</h1>} />
         </Route>
 
