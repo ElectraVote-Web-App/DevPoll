@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
        * For img just for test The end points.
        */
       const insertUserQuery =
-        "INSERT INTO users (email, password, username, created_at) VALUES (?, ?, ?, ?)";
+        "INSERT INTO users (email, password, username, img, created_at) VALUES (?, ?, ?, ?)";
       db.query(
         insertUserQuery,
         [email, hashedPassword, username, new Date()],

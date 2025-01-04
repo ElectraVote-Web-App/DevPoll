@@ -1,19 +1,13 @@
-export const SondageBars = () => {
-  const votes = [
-    {
-      id: 2,
-      stage_name: "PHP",
-      vote_count: 80,
-      percentage: 80,
-    },
-    {
-      id: 1,
-      stage_name: "JAVA",
-      vote_count: 20,
-      percentage: 20,
-    },
-    
-  ];
+import { PropTypes } from 'prop-types';
+
+export const SondageBars = ({options}) => {
+  const totalVotes = options.reduce((acc, curr) => acc + curr.votes_count, 0);
+  const votes = [...options]
+    .map((option) => ({
+      ...option,
+      percentage: totalVotes > 0 ? Math.round((parseInt(option.votes_count) / totalVotes) * 100) : 0
+    }))
+    .sort((a, b) => b.percentage - a.percentage);
 
   const error = "Please select an option first";
 
@@ -45,10 +39,10 @@ export const SondageBars = () => {
             className="z-10 flex w-full overflow-hidden cursor-pointer h-full items-center justify-between"
           >
             <span className="z-10 truncate text-nowrap font-bold text-black">
-              {vote.stage_name}
+              {vote.content}
             </span>
           <span className="z-10 text-nowrap text-xs font-medium text-black lg:text-sm">
-            ({vote.vote_count}) {vote.percentage}%
+            ({vote.votes_count}) {vote.percentage}%
           </span>
           </label>
           <div
@@ -62,4 +56,8 @@ export const SondageBars = () => {
       {error && (<p className="text-[0.8rem] font-medium text-destructive">{error}</p>)}
     </form>
   )
+}
+
+SondageBars.propTypes = {
+  options: PropTypes.array.isRequired
 }

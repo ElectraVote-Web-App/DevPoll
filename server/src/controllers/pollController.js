@@ -362,9 +362,86 @@ const deletePoll = (req, res) => {
   });
 };
 
+const getPoll = (req, res) => {
+  const pollId = parseInt(req.params.id);
+
+  if (!pollId || isNaN(pollId)) {
+    return res.status(400).json({ message: "Poll ID is required" });
+  }
+
+  // check user auth
+
+
+  const pollQuery = `
+    SELECT 
+      polls.id AS poll_id, 
+      polls.title, 
+      polls.end_time, 
+      polls.description, 
+      polls.type, 
+      options.id AS option_id, 
+      options.content AS option_content, 
+      IFNULL(COUNT(votes.id), 0) AS votes_count,
+      users.username AS creator_username,
+      users.img AS creator_img
+    FROM 
+      polls
+    LEFT JOIN 
+      options ON polls.id = options.poll_id
+    LEFT JOIN 
+      votes ON options.id = votes.option_id
+    LEFT JOIN
+      users ON polls.created_by = users.id
+    WHERE 
+      polls.id = ?
+    GROUP BY 
+      options.id
+  `;  
+
+  db.query(pollQuery, [pollId], (err, results) => {
+    if (err) {
+      console.error("Error fetching poll:", err.message);
+      return res
+        .status(500)
+        .json({ error: "Database error", details: err.message });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Poll not found" });
+    }
+
+    // Transform the results into a structured format
+    const poll = {
+      id: results[0].poll_id,
+      title: results[0].title,
+      end_time: results[0].end_time,
+      end_time_formated: formatDistanceToNow(results[0].end_time, {
+        addSuffix: true,
+      }),
+      description: results[0].description,
+      type: results[0].type,
+      creator: {
+        username: results[0].creator_username,
+        img: results[0].creator_img,
+      },
+      options: results.map((row) => ({
+        id: row.option_id,
+        content: row.option_content,
+        votes_count: results[0].type === 'vote' ? undefined : row.votes_count,
+        percentage: results[0].type === 'vote' ? undefined : (row.votes_count / results.reduce((acc, curr) => acc + curr.votes_count, 0)) * 100
+      })),
+    };
+
+    res.status(200).json(poll);
+  });
+};
+
+module.exports = { getPoll };
+
 module.exports = {
   createPoll,
   editPoll,
   deletePoll,
   getPolls,
+  getPoll
 };

@@ -1,14 +1,8 @@
-export const VoteBars = () => {
-  const votes = [
-    {
-      id: 2,
-      stage_name: "PHP",
-    },
-    {
-      id: 1,
-      stage_name: "JAVA",
-    },
-  ];
+import { PropTypes } from 'prop-types';
+
+export const VoteBars = ({options}) => {
+  const votes = [...options];
+  console.log(votes)
 
   const error = "Please select an option first";
 
@@ -37,7 +31,7 @@ export const VoteBars = () => {
             className="z-10 flex w-full overflow-hidden cursor-pointer h-full items-center justify-between"
           >
             <span className="z-10 truncate text-nowrap font-bold text-black">
-              {vote.stage_name}
+              {vote.content}
             </span>
           </label>
         </div>
@@ -46,3 +40,7 @@ export const VoteBars = () => {
     </form>
   );
 };
+
+VoteBars.propTypes = {
+  options: PropTypes.array.isRequired,
+}

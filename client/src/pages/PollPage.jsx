@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { VoteBars } from "@/components/VoteBars";
+import { useGetPollById } from "@/services/queries";
 import { Info } from "lucide-react";
 // import { ChevronLeft, Info } from "lucide-react";
 // import { useNavigate, useParams } from "react-router-dom";
@@ -24,7 +25,12 @@ function PollPage() {
   //   navigate(hasHistory ? -1 : "/polls");
   // };
   const {id} = useParams();
-  const pollType = id % 2 === 0 ?"vote" : "sondage";
+  const {data: poll, isLoading, isError, error} = useGetPollById(id);
+  console.log(poll)
+
+  if (isLoading) return <div>Loading...</div>;
+
+  if (isError) return <div>Error: {error.message}</div>;
 
   return (
     <section className="space-y-5">
@@ -36,25 +42,23 @@ function PollPage() {
         <CardHeader>
           <div className="flex justify-between items-center mb-2">
             <PollProfile
-              pic={"./public/avatars/avatar6.png"}
-              username={"Moumen"}
+              pic={`./public/avatars/${poll.creator.img}`}
+              username={poll.creator.username}
               className="bg-gray-50 p-2 self-start"
             />
-            <CountDown />
+            <CountDown end_time={poll.end_time} />
           </div>
-          <CardTitle>PHP or Java?</CardTitle>
+          <CardTitle>{poll.title}</CardTitle>
           <CardDescription>
-            Make changes to your profile here. Click save when you&apos;re
-            done.Make changes to your profile here. Click save when you&apos;re
-            done.
+            {poll.description}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {pollType === "sondage" ? (
-            <SondageBars />
-          ) : pollType === "vote" ? (
+          {poll.type === "sondage" ? (
+            <SondageBars options={poll.options} />
+          ) : poll.type === "vote" ? (
             <>
-              <VoteBars />
+              <VoteBars options={poll.options} />
               <div className="flex items-start sm:items-center gap-x-1 my-2">
                 <Info size="14" className="stroke-gray-600 mt-1 sm:mt-0" />
                 <span className="text-gray-500 text-xs">
