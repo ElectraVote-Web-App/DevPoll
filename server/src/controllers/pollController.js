@@ -424,7 +424,7 @@ const getPoll = (req, res) => {
         username: results[0].creator_username,
         img: results[0].creator_img,
       },
-      options: results.map((row) => ({
+      options: results.filter(row => row.option_id !== null).map((row) => ({
         id: row.option_id,
         content: row.option_content,
         votes_count: results[0].type === 'vote' ? undefined : row.votes_count,

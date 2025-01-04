@@ -54,10 +54,9 @@ function PollPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {poll.type === "sondage" ? (
-            <SondageBars options={poll.options} />
-          ) : poll.type === "vote" ? (
-            <>
+          {poll.options.length === 0 && <p className="text-gray-500 italic">No votes yet</p>}
+          {poll.options.length > 0 && poll.type === "sondage" && <SondageBars options={poll.options} />}
+          {poll.options.length > 0 && poll.type === "vote" && <>
               <VoteBars options={poll.options} />
               <div className="flex items-start sm:items-center gap-x-1 my-2">
                 <Info size="14" className="stroke-gray-600 mt-1 sm:mt-0" />
@@ -66,8 +65,7 @@ function PollPage() {
                   finished.
                 </span>
               </div>
-            </>
-          ) : null}
+            </>}
         </CardContent>
         <CardFooter>
           <Button
