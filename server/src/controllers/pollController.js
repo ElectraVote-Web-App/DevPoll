@@ -74,14 +74,12 @@ const paginatPolls = (req, res) => {
   const parsedPage = parseInt(page);
   const parsedLimit = parseInt(limit);
 
-  // handle this error
   if (isNaN(parsedPage) || isNaN(parsedLimit)) {
     return res.status(400).json({ error: "Invalid query parameters" });
   }
 
   const offset = (parsedPage - 1) * parsedLimit;
 
-  // Query to fetch polls and their options
   const pollsQuery = `
     SELECT 
       polls.id AS poll_id, 
@@ -111,7 +109,6 @@ const paginatPolls = (req, res) => {
         .json({ error: "Database error", details: err.message });
     }
 
-    // Transform the results into a structured format
     const polls = {};
     results.forEach((row) => {
       if (!polls[row.poll_id]) {
@@ -135,7 +132,6 @@ const paginatPolls = (req, res) => {
       }
     });
 
-    // Convert the object to an array
     const pollsArray = Object.values(polls);
 
     res.status(200).json(pollsArray);
@@ -198,14 +194,12 @@ const getPopularPolls = (req, res) => {
 const createPoll = (req, res) => {
   const { title, end_time, description, type, created_by, options } = req.body;
 
-  // Ensure `options` is an array
   if (!Array.isArray(options) || options.length < 2) {
     return res
       .status(400)
       .json({ error: "A poll must contains at least 2 options" });
   }
 
-  // Check for duplicate options
   const uniqueOptions = new Set(options);
   if (uniqueOptions.size !== options.length) {
     return res
@@ -213,7 +207,6 @@ const createPoll = (req, res) => {
       .json({ error: "Options must not contain duplicates" });
   }
 
-  // Insert poll into the database
   const pollQuery = `
     INSERT INTO polls (title, end_time, description, type, created_by, created_at)
     VALUES (?, ?, ?, ?, ?, NOW())
@@ -232,7 +225,6 @@ const createPoll = (req, res) => {
 
       const pollId = pollResult.insertId;
 
-      // Prepare options query
       const optionsQuery = `
         INSERT INTO options (content, poll_id)
         VALUES ?
@@ -275,7 +267,6 @@ const editPoll = (req, res) => {
     return res.status(400).json({ message: "Invalid input!" });
   }
 
-  // Update poll details
   const updatePollQuery = `
     UPDATE polls 
     SET title = ?, end_time = ?, description = ?, type = ?
@@ -284,19 +275,17 @@ const editPoll = (req, res) => {
 
   db.query(
     updatePollQuery,
-    [end_time, description, type, pollId],
+    [title, end_time, description, type, pollId],
     (err, result) => {
       if (err) {
         console.error(err);
         return res.status(500).json({ message: "Failed to update poll" });
       }
 
-      // Check if poll exists
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: "Poll not found" });
       }
 
-      // Handle poll options
       const uniqueOptions = [...new Set(options)];
       const deleteOldOptionsQuery = `DELETE FROM options WHERE poll_id = ?`;
       const insertNewOptionsQuery = `INSERT INTO options (content, poll_id) VALUES ?`;
@@ -334,7 +323,6 @@ const deletePoll = (req, res) => {
     return res.status(400).json({ message: "Poll ID is required" });
   }
 
-  // Delete poll options first
   const deleteOptionsQuery = `DELETE FROM options WHERE poll_id = ?`;
   const deletePollQuery = `DELETE FROM polls WHERE id = ?`;
 
@@ -344,7 +332,6 @@ const deletePoll = (req, res) => {
       return res.status(500).json({ message: "Failed to delete poll options" });
     }
 
-    // Delete the poll after options are removed
     db.query(deletePollQuery, [pollId], (deletePollErr, result) => {
       if (deletePollErr) {
         console.error(deletePollErr);
@@ -364,7 +351,8 @@ const deletePoll = (req, res) => {
 
 module.exports = {
   createPoll,
+  getPolls,
   editPoll,
   deletePoll,
-  getPolls,
-};
+  paginatPolls,
+}
