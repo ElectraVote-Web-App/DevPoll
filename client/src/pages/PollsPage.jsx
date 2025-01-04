@@ -1,12 +1,15 @@
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { Toaster, toast } from "sonner";
 import Poll from "@/components/Poll";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 import { useGetNewPopularPolls } from "@/services/queries";
 import { ChevronLeft, Loader2 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
 import PropTypes from 'prop-types';
 
 export default function PollsPage({ AUTH }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     data,
     fetchNextPage,
@@ -25,6 +28,15 @@ export default function PollsPage({ AUTH }) {
 
   if(data?.pages[0].length <= 0) return <h1 className="text-center text-2xl">No polls found</h1>;
 
+
+  useEffect(() => {
+    if (location.state?.toastMessage) {
+      toast.success(location.state.toastMessage);
+      location.state.toastMessage = null
+      // Clear the state after showing the toast
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location, navigate]);
 
   return (
     <section>
@@ -56,6 +68,7 @@ export default function PollsPage({ AUTH }) {
       </Button>
       )}
       </div>
+      <Toaster richColors/>
     </section>
   );
 }
