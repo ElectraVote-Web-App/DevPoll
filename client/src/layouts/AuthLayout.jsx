@@ -7,7 +7,7 @@ export default function AuthLayout({ AUTH }) {
   return AUTH ? (
     <div className="bg-[#F9FBFC] h-screen">
       <Header AUTH={AUTH} />
-      <main className="xl:px-[333px] pt-24 px-3">
+      <main className="xl:px-[150px] pt-20 pb-6">
         <Outlet />
       </main>
     </div>
