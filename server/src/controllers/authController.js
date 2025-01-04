@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
        * For img just for test The end points.
        */
       const insertUserQuery =
-        "INSERT INTO users (email, password, username, img, created_at) VALUES (?, ?, ?, 'avatar2.png', ?)";
+        "INSERT INTO users (email, password, username, created_at) VALUES (?, ?, ?, ?)";
       db.query(
         insertUserQuery,
         [email, hashedPassword, username, new Date()],
@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
       }
 
       const token = jwt.sign(
-        { id: user.id, email: user.email },
+        { id: user.id, email: user.email, username: user.username, img: user.img},
         process.env.JWT_SECRET,
         { expiresIn: "24h" }
       );
