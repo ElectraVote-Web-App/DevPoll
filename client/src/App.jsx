@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import PollsPage from "./pages/PollsPage";
 import PollPage from "./pages/PollPage";
 import { QueryClient, QueryClientProvider } from "react-query";
+import CreatePoll from "./pages/CreatePoll";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +36,7 @@ function App() {
         </Route>
 
         <Route element={<AuthLayout AUTH={AUTH} />} >
-          <Route path="/polls/create" element={<h1>Create Poll Page</h1>} />
+          <Route path="/polls/create" element={<CreatePoll/>} />
           <Route path="/polls/:id/edit" element={<h1>Edit Poll Page</h1>} />
           <Route path="/me" element={<h1>Profile Page</h1>} />
           <Route path="/me/settings" element={<h1>Profile Settings Page</h1>} />

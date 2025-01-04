@@ -43,6 +43,7 @@ const getPolls = (req, res) => {
       if (!polls[row.poll_id]) {
         polls[row.poll_id] = {
           id: row.poll_id,
+          title: row.title,
           end_time: row.end_time,
           description: row.description,
           type: row.type,
@@ -195,7 +196,7 @@ const getPopularPolls = (req, res) => {
 };
 
 const createPoll = (req, res) => {
-  const { end_time, description, type, created_by, options } = req.body;
+  const { title, end_time, description, type, created_by, options } = req.body;
 
   // Ensure `options` is an array
   if (!Array.isArray(options) || options.length < 2) {
@@ -214,13 +215,13 @@ const createPoll = (req, res) => {
 
   // Insert poll into the database
   const pollQuery = `
-    INSERT INTO polls (end_time, description, type, created_by, created_at)
-    VALUES (?, ?, ?, ?, NOW())
+    INSERT INTO polls (title, end_time, description, type, created_by, created_at)
+    VALUES (?, ?, ?, ?, ?, NOW())
   `;
 
   db.query(
     pollQuery,
-    [end_time, description, type, created_by],
+    [title, end_time, description, type, created_by],
     (err, pollResult) => {
       if (err) {
         console.error("Error inserting poll:", err.message);
@@ -262,7 +263,7 @@ const createPoll = (req, res) => {
 
 const editPoll = (req, res) => {
   const pollId = req.params.id;
-  const { end_time, description, type, options } = req.body;
+  const { title, end_time, description, type, options } = req.body;
 
   if (
     !pollId ||
@@ -276,9 +277,10 @@ const editPoll = (req, res) => {
 
   // Update poll details
   const updatePollQuery = `
-      UPDATE polls 
-      SET end_time = ?, description = ?, type = ?
-      WHERE id = ?`;
+    UPDATE polls 
+    SET title = ?, end_time = ?, description = ?, type = ?
+    WHERE id = ?
+  `;
 
   db.query(
     updatePollQuery,

@@ -1,3 +1,4 @@
+import BackButton from "@/components/BackButton";
 import CountDown from "@/components/CountDown";
 import PollProfile from "@/components/PollProfile";
 import { SondageBars } from "@/components/SondageBars";
@@ -11,23 +12,26 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { VoteBars } from "@/components/VoteBars";
-import { ChevronLeft, Info } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Info } from "lucide-react";
+// import { ChevronLeft, Info } from "lucide-react";
+// import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function PollPage() {
-  const navigate = useNavigate();
-  const navigateBack = () => {
-    const hasHistory = window.history.state !== null;
-    navigate(hasHistory ? -1 : "/polls");
-  };
+  // const navigate = useNavigate();
+  // const navigateBack = () => {
+  //   const hasHistory = window.history.state !== null;
+  //   navigate(hasHistory ? -1 : "/polls");
+  // };
   const {id} = useParams();
   const pollType = id % 2 === 0 ?"vote" : "sondage";
 
   return (
     <section className="space-y-5">
-      <Button onClick={navigateBack} variant="outline" size="icon">
+      {/* <Button onClick={navigateBack} variant="outline" size="icon">
         <ChevronLeft />
-      </Button>
+      </Button> */}
+      <BackButton/>
       <Card className="w-full rounded-3xl">
         <CardHeader>
           <div className="flex justify-between items-center mb-2">
