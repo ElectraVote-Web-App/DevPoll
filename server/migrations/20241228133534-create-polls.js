@@ -10,19 +10,25 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: ''
+      },
       end_time: {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      // status: {
-      //   type: Sequelize.STRING,
-      // },
+      /* status: {
+        type: Sequelize.ENUM('active', 'inactive'),
+        defaultValue: 'active',
+      }, */
       description: {
         type: Sequelize.STRING,
         allowNull: true,
       },
       type: {
-        type: Sequelize.ENUM('sou', 'vote'),
+        type: Sequelize.ENUM('sondage', 'vote'),
         allowNull: false,
       },
       created_at: {

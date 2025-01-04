@@ -1,6 +1,4 @@
-// EXAMPLE:
-
-/* 
 import axiosClient from "@/http/axiosConfig";
-export const getMe = async() => (await axiosClient.get('/me')).data;
-*/
+
+export const getPopularActivePolls = async() => (await axiosClient.get('/polls?filter=popular_active')).data;
+export const getNewPopularPolls = async(page, limit = 6) => (await axiosClient.get(`/polls?page=${page}&limit=${limit}`)).data;
