@@ -9,6 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { LogoutDialog } from "@/components/logout-dialog";
+import { useAuth } from "@/context/AuthContext";
 import PropTypes from "prop-types";
 import { Bell, Check } from "lucide-react";
 import {
@@ -22,10 +24,9 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function Header({ AUTH }) {
-  const username = "Cristina";
-  const logout = () => {
-    alert("Logout");
-  };
+  const { user, logout: handleLogout } = useAuth();
+
+  const username = user ? user.username : "";
 
   const notifications = [
     {
@@ -72,7 +73,7 @@ export default function Header({ AUTH }) {
             <DropdownMenuTrigger className="relative cursor-pointer">
               {
                 newNotif && (<div className="bg-red-500 absolute w-2 aspect-square rounded-full top-0 right-0"></div>)
-              } 
+              }
               <Bell size={22} />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-transparent border-transparent shadow-none">
@@ -82,7 +83,7 @@ export default function Header({ AUTH }) {
                   <CardDescription>You have 3 unread messages.</CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-4">
-                  
+
                   <div>
                     {notifications.map((notification, index) => (
                       <div
@@ -113,7 +114,7 @@ export default function Header({ AUTH }) {
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar>
-                <AvatarImage src="./public/avatars/avatar6.png" />
+                <AvatarImage src={`./public/avatars/${user.img}`} />
                 <AvatarFallback>
                   {username.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
@@ -131,8 +132,8 @@ export default function Header({ AUTH }) {
               <DropdownMenuItem>
                 <Link to="/about">About</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={logout} className="cursor-pointer">
-                Logout
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <LogoutDialog onConfirm={handleLogout} />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

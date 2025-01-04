@@ -5,6 +5,10 @@ import GuestLayout from "./layouts/GuestLayout"
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 import PollsPage from "./pages/PollsPage";
+import SignIn from "./pages/auth/SignIn";
+import SignUp from "./pages/auth/SignUp";
+import { useAuth } from "./context/AuthContext";
+import { Toaster } from "@/components/ui/toaster";
 import PollPage from "./pages/PollPage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import CreatePoll from "./pages/CreatePoll";
@@ -20,13 +24,14 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  // until we implement authentication with context api or react-query
-  const AUTH = true;
+  const { user } = useAuth();
+  
+  const AUTH = !!user; 
 
   return (
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <Routes>
+        <Routes>
 
         <Route element={<SharedLayout AUTH={AUTH} />} >
           <Route path="/" element={<Home AUTH={AUTH} />} />
@@ -43,14 +48,14 @@ function App() {
           <Route path="/activities" element={<h1>Profile Page</h1>} />
         </Route>
 
-        <Route element={<GuestLayout AUTH={AUTH} />} >
-          <Route path="/signin" element={<h1>Signin Page</h1>} />
-          <Route path="/signup" element={<h1>Signup Page</h1>} />
-        </Route>
+          <Route element={<GuestLayout AUTH={AUTH} />} >
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+          </Route>
 
-        <Route path="*" element={<NotFound/>} />
-
-      </Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster/>
     </BrowserRouter>
     </QueryClientProvider>
   )
