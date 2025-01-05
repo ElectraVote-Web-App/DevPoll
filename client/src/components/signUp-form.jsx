@@ -103,8 +103,10 @@ export function SignUpForm({ onSignUpSuccess, className, ...props }) {
                 {avatars.map((avatar) => (
                   <Avatar
                     key={avatar}
-                    className={`hover:border-2 border-green-500 duration-150 hover:scale-125 focus:border-2 transition-transform ${
-                      selectedAvatar === avatar ? "border-blue-500" : ""
+                    className={`cursor-pointer transition-transform duration-150 ${
+                      selectedAvatar === avatar
+                        ? "border-2 border-blue-500"
+                        : "hover:border-2 hover:border-green-500 hover:scale-125"
                     }`}
                     onClick={() => handleAvatarClick(avatar)}
                   >

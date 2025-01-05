@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
   try {
-    const { email, password, username } = req.body;
+    const { email, password, username, img } = req.body;
     
     const checkUserQuery = "SELECT * FROM users WHERE email = ?";
     db.query(checkUserQuery, [email], async (err, results) => {
@@ -23,10 +23,10 @@ const registerUser = async (req, res) => {
        * For img just for test The end points.
       */
      const insertUserQuery =
-     "INSERT INTO users (email, password, username, created_at) VALUES (?, ?, ?, ?)";
+     "INSERT INTO users (email, password, username, img, created_at) VALUES (?, ?, ?, ?, ?)";
      db.query(
        insertUserQuery,
-       [email, hashedPassword, username, new Date()],
+       [email, hashedPassword, username, img, new Date()],
        (err, results) => {
          if (err) {
            return res.status(500).json({ message: err.message });
