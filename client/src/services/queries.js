@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "react-query";
-import { getNewPopularPolls, getPoll, getPopularActivePolls } from "./api";
+import { getNewPopularPolls, getPoll, getPopularActivePolls, getVoteStatistics } from "./api";
 
 
 export const useGetPopularActivePolls = () => {
@@ -29,5 +29,14 @@ export const useGetPollById = (id) => {
   return useQuery({
     queryKey: ["poll", id],
     queryFn: () => getPoll(id),
+    refetchOnMount: "always",
+  });
+}
+
+export const useGetVoteStatistics = (pollId) => {
+  return useQuery({
+    queryKey: ["vote_statistics", pollId],
+    queryFn: () => getVoteStatistics(pollId),
+    refetchOnMount: "always",
   });
 }
