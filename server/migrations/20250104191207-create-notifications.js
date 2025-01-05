@@ -28,6 +28,8 @@ module.exports = {
           model: 'polls',
           key: 'id',
         },
+        onDelete: 'CASCADE',
+        allowNull: false,
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -35,6 +37,8 @@ module.exports = {
           model: 'users',
           key: 'id',
         },
+        onDelete: 'CASCADE',
+        allowNull: false,
       }
     })
   },

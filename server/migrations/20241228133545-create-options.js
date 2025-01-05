@@ -19,7 +19,9 @@ module.exports = {
         references: {
           model: 'polls',
           key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        allowNull: false,
       },
     }),
 
