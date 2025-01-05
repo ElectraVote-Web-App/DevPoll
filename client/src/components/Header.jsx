@@ -27,15 +27,15 @@ export default function Header() {
 
   const notifications = [
     {
-      title: "Your call has been confirmed.",
+      title: "New Poll from John Doe!",
       description: "1 hour ago",
     },
     {
-      title: "You have a new message!",
+      title: "New Poll from John Doe!",
       description: "1 hour ago",
     },
     {
-      title: "Your subscription is expiring soon!",
+      title: "New Poll from John Doe!",
       description: "2 hours ago",
     },
   ];
