@@ -383,7 +383,8 @@ const getPoll = (req, res) => {
       options.content AS option_content, 
       IFNULL(COUNT(votes.id), 0) AS votes_count,
       users.username AS creator_username,
-      users.img AS creator_img
+      users.img AS creator_img,
+      IFNULL((SELECT 1 FROM votes WHERE votes.option_id = options.id AND votes.user_id = ?), 0) AS user_voted
     FROM 
       polls
     LEFT JOIN 
@@ -398,7 +399,7 @@ const getPoll = (req, res) => {
       options.id
   `;  
 
-  db.query(pollQuery, [pollId], (err, results) => {
+  db.query(pollQuery, [userId, pollId], (err, results) => {
     if (err) {
       console.error("Error fetching poll:", err.message);
       return res
@@ -428,7 +429,8 @@ const getPoll = (req, res) => {
         id: row.option_id,
         content: row.option_content,
         votes_count: results[0].type === 'vote' ? undefined : row.votes_count,
-        percentage: results[0].type === 'vote' ? undefined : (row.votes_count / results.reduce((acc, curr) => acc + curr.votes_count, 0)) * 100
+        percentage: results[0].type === 'vote' ? undefined : (row.votes_count / results.reduce((acc, curr) => acc + curr.votes_count, 0)) * 100,
+        user_voted: row.user_voted === 1
       })),
     };
 
