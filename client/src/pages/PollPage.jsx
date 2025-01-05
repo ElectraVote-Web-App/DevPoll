@@ -23,6 +23,8 @@ function PollPage() {
   const { data: poll, isLoading, isError, error } = useGetPollById(id);
   const { width, height } = useWindowSize();
 
+  console.log(poll?.creator?.img);
+
   if (isNaN(parseInt(id))) {
     return <NotFound />;
   }
@@ -39,7 +41,7 @@ function PollPage() {
           <div className="flex justify-between items-center mb-2">
             <div className="flex items-center gap-x-2">
               <PollProfile
-                pic={`./public/avatars/${poll.creator.img}`}
+                pic={`/avatars/${poll?.creator?.img}`}
                 username={poll.creator.username}
                 className="bg-gray-50 p-2 self-start"
               />
