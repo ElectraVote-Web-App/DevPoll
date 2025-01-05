@@ -5,32 +5,33 @@ const jwt = require("jsonwebtoken");
 const registerUser = async (req, res) => {
   try {
     const { email, password, username } = req.body;
-
+    
     const checkUserQuery = "SELECT * FROM users WHERE email = ?";
     db.query(checkUserQuery, [email], async (err, results) => {
       if (err) {
         return res.status(500).json({ message: "Database error" });
       }
-
+      
       if (results.length > 0) {
         return res.status(400).json({ message: "User already exists" });
       }
-
+      
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
-
+      
       /**
        * For img just for test The end points.
-       */
-      const insertUserQuery =
-        "INSERT INTO users (email, password, username, img, created_at) VALUES (?, ?, ?, ?)";
-      db.query(
-        insertUserQuery,
-        [email, hashedPassword, username, new Date()],
-        (err, results) => {
-          if (err) {
-            return res.status(500).json({ message: "Database error" });
+      */
+     const insertUserQuery =
+     "INSERT INTO users (email, password, username, created_at) VALUES (?, ?, ?, ?)";
+     db.query(
+       insertUserQuery,
+       [email, hashedPassword, username, new Date()],
+       (err, results) => {
+         if (err) {
+           return res.status(500).json({ message: err.message });
           }
+          
 
           res.status(201).json({ message: "User registered successfully" });
         }

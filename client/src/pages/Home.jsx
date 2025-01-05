@@ -1,9 +1,10 @@
+import { useAuth } from "@/context/AuthContext";
 import { useGetPopularActivePolls } from "@/services/queries";
 import { ChevronRight } from "lucide-react";
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-const Home = ({ AUTH }) => {
+const Home = () => {
+  const {user} = useAuth();
   const currentHour = new Date().getHours();
   const greeting = currentHour < 12 ? "Good Morning 👋" : "Good Evening 👋";
   const { data, error, isError, isLoading } = useGetPopularActivePolls();
@@ -51,7 +52,7 @@ const Home = ({ AUTH }) => {
             className="bg-white gap-x-2 rounded-3xl shadow-lg font-medium text-xl sm:text-2xl px-6 py-4 sm:px-8 sm:py-6 flex justify-between items-center mr-8 self-start mb-4 hover:scale-110 transition-transform duration-200 opacity-0 "
           >
             <h2 >
-              {AUTH ? (
+              {user ? (
                 <>
                   You have <br />
                    Active Polls
@@ -158,11 +159,11 @@ const Home = ({ AUTH }) => {
           </Link>
           
           <Link
-            to={AUTH ? "/polls" : "/signin"}
+            to={user ? "/polls" : "/signin"}
             className="bg-white gap-x-2 rounded-3xl shadow-lg font-medium text-xl sm:text-2xl px-6 py-4 sm:px-8 sm:py-6 flex justify-between items-center mr-8 self-start mb-4 hover:scale-110 transition-transform duration-200"
           >
             <h2>
-              {AUTH ? (
+              {user ? (
                 <>
                   You have <br />
                   {active_polls_count} Active Polls
@@ -217,7 +218,3 @@ const Home = ({ AUTH }) => {
 };
 
 export default Home;
-
-Home.propTypes = {
-  AUTH: PropTypes.bool.isRequired,
-};

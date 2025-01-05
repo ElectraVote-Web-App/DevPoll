@@ -1,11 +1,12 @@
 import Poll from "@/components/Poll";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 import { useGetNewPopularPolls } from "@/services/queries";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import PropTypes from 'prop-types';
 
-export default function PollsPage({ AUTH }) {
+export default function PollsPage() {
+  const {user} = useAuth();
   const navigate = useNavigate();
   const {
     data,
@@ -34,7 +35,7 @@ export default function PollsPage({ AUTH }) {
       </Button>
 
         {
-          AUTH && <Button asChild className="rounded-xl hover:bg-[#277EBD] bg-blue-500">
+          user && <Button asChild className="rounded-xl hover:bg-[#277EBD] bg-blue-500">
           <Link to={'/polls/create'}>Create new</Link>
         </Button>
         }
@@ -59,7 +60,3 @@ export default function PollsPage({ AUTH }) {
     </section>
   );
 }
-
-PollsPage.propTypes = {
-  AUTH: PropTypes.bool.isRequired,
-};

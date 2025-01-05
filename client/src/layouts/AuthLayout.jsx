@@ -1,12 +1,13 @@
 import { Navigate, Outlet } from "react-router-dom";
-import PropTypes from "prop-types";
 import Header from "@/components/Header";
+import { useAuth } from "@/context/AuthContext";
 
-export default function AuthLayout({ AUTH }) {
+export default function AuthLayout() {
+  const { user } = useAuth();
 
-  return AUTH ? (
+  return user ? (
     <div className="bg-[#F9FBFC] h-screen">
-      <Header AUTH={AUTH} />
+      <Header />
       <main className="xl:px-[333px] pt-24 px-3">
         <Outlet />
       </main>
@@ -16,6 +17,3 @@ export default function AuthLayout({ AUTH }) {
   );
 }
 
-AuthLayout.propTypes = {
-  AUTH: PropTypes.bool.isRequired,
-};

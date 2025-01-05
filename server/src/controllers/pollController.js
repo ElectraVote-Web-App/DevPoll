@@ -1,5 +1,6 @@
 const db = require("../config/database");
 const { formatDistanceToNow } = require("date-fns");
+const getUserId = require("../lib/utils");
 
 const getPolls = (req, res) => {
   const { page, limit, filter } = req.query;
@@ -369,8 +370,7 @@ const getPoll = (req, res) => {
     return res.status(400).json({ message: "Poll ID is required" });
   }
 
-  // check user auth
-
+  const userId = getUserId(req);
 
   const pollQuery = `
     SELECT 
