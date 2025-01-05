@@ -8,7 +8,8 @@
     "test": "",
     "migration": "npx sequelize-cli db:migrate",
     "rollback": "npx sequelize-cli db:migrate:undo",
-    "rollback-all": "npx sequelize-cli db:migrate:undo:all"
+    "rollback-all": "npx sequelize-cli db:migrate:undo:all",
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "",
