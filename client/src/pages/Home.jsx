@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const Home = () => {
   const {user} = useAuth();
   const currentHour = new Date().getHours();
-  const greeting = currentHour < 12 ? "Good Morning 👋" : "Good Evening 👋";
+  const greeting = user ? (currentHour < 12 ? `Good Morning 👋, ${user?.username}!` : `Good Evening 👋, ${user?.username}!`):(currentHour < 12 ? "Good Morning 👋" : "Good Evening 👋") ;
   const { data, error, isError, isLoading } = useGetPopularActivePolls();
 
   if (isLoading || data.length < 6) {

@@ -180,7 +180,7 @@ export const VoteBars = ({ options: initialOptions, poll }) => {
           {poll.end_time < new Date().toISOString() && (
             <div
               className={`absolute left-0 top-0 h-full rounded-xl transition-all duration-700 ease-in-out ${
-                option.percentage > 50
+                option.percentage >= 50
                   ? "bg-[#c5e0fc]"
                   : option.percentage === 50
                   ? "bg-gray-300"
