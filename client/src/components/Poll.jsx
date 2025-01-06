@@ -23,7 +23,6 @@ const Poll = ({ poll }) => {
   console.log(new Date(poll.end_time));
   const status = new Date(poll.end_time) < new Date() ? "closed" : "open";
 
-const Poll = ({ status, id }) => {
   return (
     <div className="bg-white text-gray-900 p-4 rounded-xl shadow-lg space-y-4 hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
       <div className="flex justify-between items-center">
@@ -34,7 +33,7 @@ const Poll = ({ status, id }) => {
               Closed
             </p>
           )}
-          <button className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 flex justify-center items-center">
+          <button onClick={sharePoll} className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 flex justify-center items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
