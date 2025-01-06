@@ -11,7 +11,6 @@ import {
 } from "./ui/dropdown-menu";
 import { LogoutDialog } from "@/components/logout-dialog";
 import { useAuth } from "@/context/AuthContext";
-import PropTypes from "prop-types";
 import { Bell, Check } from "lucide-react";
 import {
   Card,
@@ -23,22 +22,20 @@ import {
 } from "./ui/card";
 import { cn } from "@/lib/utils";
 
-export default function Header({ AUTH }) {
+export default function Header() {
   const { user, logout: handleLogout } = useAuth();
-
-  const username = user ? user.username : "";
 
   const notifications = [
     {
-      title: "Your call has been confirmed.",
+      title: "New Poll from John Doe!",
       description: "1 hour ago",
     },
     {
-      title: "You have a new message!",
+      title: "New Poll from John Doe!",
       description: "1 hour ago",
     },
     {
-      title: "Your subscription is expiring soon!",
+      title: "New Poll from John Doe!",
       description: "2 hours ago",
     },
   ];
@@ -50,7 +47,7 @@ export default function Header({ AUTH }) {
       <NavLink to="/" className="font-bold text-xl text-black">
         DEVPOLL
       </NavLink>
-      {!AUTH && (
+      {!user && (
         <div className="flex gap-x-3">
           <Button
             asChild
@@ -67,7 +64,7 @@ export default function Header({ AUTH }) {
           </Button>
         </div>
       )}
-      {AUTH && (
+      {user && (
         <div className="flex gap-x-6 items-center">
           <DropdownMenu>
             <DropdownMenuTrigger className="relative cursor-pointer">
@@ -116,7 +113,7 @@ export default function Header({ AUTH }) {
               <Avatar>
                 <AvatarImage src={`./public/avatars/${user.img}`} />
                 <AvatarFallback>
-                  {username.slice(0, 2).toUpperCase()}
+                  {user.username.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
@@ -142,7 +139,3 @@ export default function Header({ AUTH }) {
     </header>
   );
 }
-
-Header.propTypes = {
-  AUTH: PropTypes.bool.isRequired,
-};

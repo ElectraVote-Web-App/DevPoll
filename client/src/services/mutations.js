@@ -1,10 +1,10 @@
-// EXAMPLE:
+import { useMutation } from 'react-query';
+import { votePoll } from './api';
 
-/*
-export const useRegister = () => {
+export const useVotePoll = () => {
   return useMutation({
-    mutationKey: ["register"],
-    mutationFn: (data) => registerApi(data),
+    mutationKey: ["votePoll"],
+    mutationFn: ({ pollId, optionId }) => votePoll(pollId, optionId),
+    
   });
 };
-*/

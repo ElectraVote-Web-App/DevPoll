@@ -7,7 +7,6 @@ import Home from "./pages/Home";
 import PollsPage from "./pages/PollsPage";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
-import { useAuth } from "./context/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
 import PollPage from "./pages/PollPage";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -30,23 +29,22 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const { user } = useAuth();
-  
-  const AUTH = !!user; 
 
+  
+  
   return (
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
         <Routes>
 
-        <Route element={<SharedLayout AUTH={AUTH} />} >
-          <Route path="/" element={<Home AUTH={AUTH} />} />
-          <Route path="/polls" element={<PollsPage AUTH={AUTH}/>} />
+        <Route element={<SharedLayout />} >
+          <Route path="/" element={<Home />} />
+          <Route path="/polls" element={<PollsPage />} />
           <Route path="/polls/:id" element={<PollPage/>} />
           <Route path="/about" element={<h1>Write Docs here...</h1>} />
         </Route>
 
-        <Route element={<AuthLayout AUTH={AUTH} />} >
+        <Route element={<AuthLayout />} >
           <Route path="/polls/create" element={<CreatePoll/>} />
           <Route path="/polls/edit/:id" element={<EditPoll/>} />
           <Route path="/me" element={<ProfilePage/>} />
@@ -58,7 +56,7 @@ function App() {
           <Route path="/activities" element={<h1>Profile Page</h1>} />
         </Route>
 
-          <Route element={<GuestLayout AUTH={AUTH} />} >
+          <Route element={<GuestLayout />} >
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
           </Route>
