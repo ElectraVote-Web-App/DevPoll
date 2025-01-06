@@ -123,17 +123,19 @@ export const SondageBars = ({ options: initialOptions, poll }) => {
                 handleChange(option.id);
               }}
             >
-              <input
-                type="radio"
-                name="voted_for"
-                className={`z-10 cursor-pointer mx-2 h-4 w-4 outline-black ${
-                  selectedOption === option.id ? "accent-black" : "accent-gray-400"
-                }`}
-                id={option.id}
-                value={option.id}
-                onChange={() => handleChange(option.id)}
-                checked={selectedOption === option.id}
-              />
+              {poll.end_time >= new Date().toISOString() && (
+                <input
+                  type="radio"
+                  name="voted_for"
+                  className={`z-10 cursor-pointer mx-2 h-4 w-4 outline-black ${
+                    selectedOption === option.id ? "accent-black" : "accent-gray-400"
+                  }`}
+                  id={option.id}
+                  value={option.id}
+                  onChange={() => handleChange(option.id)}
+                  checked={selectedOption === option.id}
+                />
+              )}
               <label
                 htmlFor={option.id}
                 className="z-10 flex w-full overflow-hidden cursor-pointer h-full items-center justify-between"
@@ -142,7 +144,7 @@ export const SondageBars = ({ options: initialOptions, poll }) => {
                   {option.content}
                 </span>
                 <span className="z-10 text-nowrap text-xs font-medium text-black lg:text-sm">
-                  ({option.votes_count}) {option.percentage}%
+                  ({option.votes_count}) {Math.round(option.percentage)}%
                 </span>
               </label>
               <div
@@ -153,7 +155,7 @@ export const SondageBars = ({ options: initialOptions, poll }) => {
                     ? "bg-gray-300"
                     : "bg-gray-300"
                 }`}
-                style={{ width: `${option.percentage}%` }}
+                style={{ width: `${Math.round(option.percentage)}%` }}
               ></div>
             </div>
           ))}
