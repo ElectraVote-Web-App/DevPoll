@@ -20,6 +20,14 @@ export default function PollsPage() {
     hasNextPage,
   } = useGetNewPopularPolls();
 
+    useEffect(() => {
+      if (location.state?.toastMessage) {
+        toast.success(location.state.toastMessage);
+        location.state.toastMessage = null
+        // Clear the state after showing the toast
+        navigate(location.pathname, { replace: true });
+      }
+    }, [location, navigate]);
   const navigateBack = () => {
     const hasHistory = window.history.state !== null;
     navigate(hasHistory ? -1 : "/polls");
@@ -29,15 +37,6 @@ export default function PollsPage() {
 
   if(data?.pages[0].length <= 0) return <h1 className="text-center text-2xl">No polls found</h1>;
 
-
-  useEffect(() => {
-    if (location.state?.toastMessage) {
-      toast.success(location.state.toastMessage);
-      location.state.toastMessage = null
-      // Clear the state after showing the toast
-      navigate(location.pathname, { replace: true });
-    }
-  }, [location, navigate]);
 
   return (
     <section>

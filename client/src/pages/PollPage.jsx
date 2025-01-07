@@ -41,6 +41,11 @@ function PollPage() {
   const { data: poll, isLoading, isError, error } = useGetPollById(id);
   const { width, height } = useWindowSize();
 
+  useEffect(() => {
+    const creatorInfo = fetchPollCreatorInfo(id);
+    setPollCreator(creatorInfo);
+    setIsCreator(creatorInfo.creatorId === currentUser);
+  }, [id]);
   console.log(poll?.creator?.img);
 
   if (isNaN(parseInt(id))) {
@@ -50,12 +55,6 @@ function PollPage() {
   if (isLoading) return <div>Loading...</div>;
 
   if (isError) return <div>Error: {error.message}</div>;
-
-  useEffect(() => {
-    const creatorInfo = fetchPollCreatorInfo(id);
-    setPollCreator(creatorInfo);
-    setIsCreator(creatorInfo.creatorId === currentUser);
-  }, [id]);
 
   const handleDelete = () => {
     const success = deletePoll(id);
