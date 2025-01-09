@@ -19,6 +19,7 @@ module.exports = {
         email: faker.internet.email(),
         password: password,
         img: `avatar${avatarNumber}.png`,
+        bio: faker.lorem.sentence(),
         created_at: Sequelize.literal("NOW()"),
       });
     }

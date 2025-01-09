@@ -8,7 +8,7 @@ const getUserProfile = (req, res) => {
 
   // Query to fetch the user profile data
   const query = `
-    SELECT id, username, img
+    SELECT id, username, img, bio
     FROM users
     WHERE id = ?
   `;
