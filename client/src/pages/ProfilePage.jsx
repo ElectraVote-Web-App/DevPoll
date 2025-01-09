@@ -98,7 +98,7 @@ console.log(userVotedPolls)
             </div>
             <div className="flex flex-col items-center">
               <span className="text-sm text-gray-500">Polls Participated</span>
-              <span className="text-lg font-bold">543</span> {/* Replace with actual vote count */}
+              <span className="text-lg font-bold">{userVotedPolls.length}</span> {/* Replace with actual vote count */}
             </div>
           </div>
           <Button variant="default" className="mt-6 w-full">
