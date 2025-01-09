@@ -85,5 +85,43 @@ const getUserVotedPolls = (req, res) => {
   });
 };
 
+const updateUserProfile = (req, res) => {
+  const { userId } = req.params;
+  const { username, email, bio, avatar } = req.body;
 
-module.exports = { getUserProfile, getUserVotedPolls };
+  // Validate input
+  if (!username || !email) {
+    return res.status(400).json({
+      message: "Username and email are required.",
+    });
+  }
+
+  // Query to update the user profile
+  const query = `
+    UPDATE users
+    SET username = ?, email = ?, bio = ?, img = ?
+    WHERE id = ?
+  `;
+
+  const values = [username, email, bio || null, avatar || null, userId];
+
+  db.query(query, values, (err, results) => {
+    if (err) {
+      console.error("Error updating user profile:", err);
+      return res
+        .status(500)
+        .json({ message: "Database error", error: err.message });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully.",
+      updatedFields: { username, email, bio, avatar },
+    });
+  });
+};
+
+module.exports = { getUserProfile, getUserVotedPolls, updateUserProfile };
