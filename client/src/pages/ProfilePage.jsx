@@ -5,9 +5,73 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Poll from "@/components/Poll";
 import BackButton from "@/components/BackButton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axiosClient from "@/http/axiosConfig";
+import { useAuth } from "@/context/AuthContext";
+import { toast, Toaster } from "sonner";
 
 export default function ProfilePage() {
+  const { user } = useAuth();
+  const userId = user.id;
+  const [polls, setPolls] = useState([]);
+  const [profile, setProfile] = useState(null); // To store the profile data
+  const [userVotedPolls, setUserVotedPolls] = useState([]); // To store the profile data
+  const [error, setError] = useState(null);
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (location.state?.toastMessage) {
+      toast.success(location.state.toastMessage);
+      setTimeout(() => {
+        location.state.toastMessage = null
+        // Clear the state after showing the toast
+        navigate(location.pathname, { replace: true });
+        
+      }, 2000);
+    }
+  }, [location, navigate]);
+
+  useEffect(() => {
+    const fetchPolls = async () => {
+      try {
+        const response = await axiosClient.get(`/polls/user/${userId}`);
+        setPolls(response.data);
+      } catch (err) {
+        setError(err.response?.data?.message || "Error fetching polls.");
+      }
+    };
+
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axiosClient.get(`/users/${userId}`);
+        setProfile(response.data);
+      } catch (err) {
+        setError(err.response?.data?.message || "Error fetching profile.");
+      }
+    };
+
+    const fetchUserVotedPolls = async () => {
+      try {
+        const response = await axiosClient.get(`/users/${userId}/voted-polls`);
+        setUserVotedPolls(response.data.polls);
+      } catch(err) {
+        setError(err.response?.data?.message || "Error fetching user voted polls.");
+      }
+    }
+
+    fetchPolls();
+    fetchUserProfile();
+    fetchUserVotedPolls();
+    
+    
+  }, [userId]);
+  
+  if (error) {
+    return <p>{error}</p>;
+  }
+console.log(userVotedPolls)
   return (
     <>
       <BackButton />
@@ -15,24 +79,26 @@ export default function ProfilePage() {
         {/* Left Profile Section */}
         <div className="w-1/3 bg-white shadow-md rounded-lg p-4 sticky top-4">
           <div className="flex flex-col items-center">
-            <Avatar className="h-20 w-20 my-4 transition-transform transform hover:scale-110 duration-300 ease-in-out">
-              <AvatarImage src="./public/avatars/avatar6.png" alt="User profile picture" />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
-            <h2 className="text-lg font-bold">UserName</h2>
-            <p className="text-sm text-gray-500">@alice</p>
+            {profile && (
+              <Avatar className="h-20 w-20 my-4 transition-transform transform hover:scale-110 duration-300 ease-in-out">
+                <AvatarImage src={`./avatars/${profile.img}`} alt="User profile picture" />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+            )}
+            <h2 className="text-lg font-bold">{profile?.username || "UserName"}</h2>
+            <p className="text-sm text-gray-500">@{profile?.username || "username"}</p>
           </div>
           <p className="mt-4 text-sm text-center text-gray-600">
-            Lorem ipsum bio text lodsmk mendor kajsti mendor fal
+            {profile?.bio || "Lorem ipsum bio text"}
           </p>
           <div className="mt-6 space-y-8">
             <div className="flex flex-col items-center">
-              <span className="text-sm text-gray-500">Polls</span>
-              <span className="text-lg font-bold">1.2k</span>
+              <span className="text-sm text-gray-500">Polls Created</span>
+              <span className="text-lg font-bold">{polls.length}</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-sm text-gray-500">Votes</span>
-              <span className="text-lg font-bold">543</span>
+              <span className="text-sm text-gray-500">Polls Participated</span>
+              <span className="text-lg font-bold">543</span> {/* Replace with actual vote count */}
             </div>
           </div>
           <Button variant="default" className="mt-6 w-full">
@@ -55,8 +121,8 @@ export default function ProfilePage() {
             {/* My Polls Tab */}
             <TabsContent value="my-polls">
               <div className="space-y-4 mt-4">
-                {[...Array(9)].map((_, index) => (
-                  <Poll key={index} id={index + 1} status={index === 0 ? "closed" : ""} className="transition-opacity duration-500 ease-in-out" />
+                {polls.length > 0 && polls.map((poll) => (
+                  <Poll key={poll.id} poll={poll} className="transition-opacity duration-500 ease-in-out" />
                 ))}
               </div>
             </TabsContent>
@@ -64,14 +130,15 @@ export default function ProfilePage() {
             {/* My Activities Tab */}
             <TabsContent value="my-activities">
               <div className="space-y-4 mt-4">
-                {[...Array(5)].map((_, index) => (
-                  <Poll key={index} id={index + 10} voted={true} className="transition-opacity duration-500 ease-in-out" />
+                {userVotedPolls.map((poll) => (
+                    <Poll key={poll.id} poll={poll} className="transition-opacity duration-500 ease-in-out" />
                 ))}
               </div>
             </TabsContent>
           </Tabs>
         </div>
       </div>
+      <Toaster richColors/>
     </>
   );
 }

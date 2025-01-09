@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Adjust based on your routing library
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -9,82 +8,95 @@ import { cn } from "@/lib/utils";
 import BackButton from "@/components/BackButton";
 import axiosClient from "@/http/axiosConfig";
 import { DateTimePicker24h } from "@/components/ui/DateTimePicker24h";
+import { useParams } from "react-router-dom";
 
+// need to add logic to get pollId
 const EditPoll = () => {
-  const { pollId } = useParams(); // Get pollId from route params
-  const navigate = useNavigate();
-
-  // State management
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [formattedDate, setEndTime] = useState(null);
   const [options, setOptions] = useState([]);
   const [hideResults, setHideResults] = useState(false);
   const [errors, setErrors] = useState({});
+  const [formValues, setFormValues] = useState({
+    title: "",
+    description: "",
+  });
+  const [endTime, setEndTime] = useState("");
+  const {id} = useParams()
+  const pollId = id
 
-  // Fetch poll details
   useEffect(() => {
-    axiosClient
-      .get(`/polls/${pollId}`)
-      .then((response) => {
-        const { title, description, end_time, options, type } = response.data;
-        setTitle(title);
-        setDescription(description);
-        setHideResults(type == "vote" ? true : false);
-        setEndTime(end_time); // Use raw ISO string as the `DateTimePicker24h` handles formatting
-        setOptions(
-          options.map((option) => ({ id: option.id, content: option.content }))
-        );
-      })
-      .catch(() => {
-        toast.error("Failed to load poll details");
-      });
+    // Fetch poll data and populate the form
+    const fetchPoll = async () => {
+      try {
+        const { data } = await axiosClient.get(`/polls/${pollId}`);
+        setFormValues({ title: data.title, description: data.description });
+        setOptions(data.options);
+        setEndTime(data.endTime);
+        setHideResults(data.type === "vote");
+        console.log(data)
+      } catch (error) {
+        console.error("Error fetching poll data:", error);
+        toast.error("Failed to load poll data.");
+      }
+    };
+
+    fetchPoll();
   }, [pollId]);
 
-  // Add a new option
-  const handleAddOption = () => {
-    setOptions([...options, { id: null, content: "" }]);
-  };
-
-  // Remove an option
+  const handleAddOption = () => setOptions((prev) => [...prev, ""]);
   const handleRemoveOption = (index) => {
-    setOptions(options.filter((_, i) => i !== index));
+    setOptions((prev) => prev.filter((_, i) => i !== index));
+  };
+  const handleOptionChange = (index, value) => {
+    setOptions((prev) => prev.map((opt, i) => (i === index ? value : opt)));
+  };
+  const handleInputChange = (field, value) => {
+    setFormValues((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: validateField(field, value) }));
   };
 
-  // Update poll
-  const handleSubmit = () => {
-    const newErrors = {};
-    if (!title.trim()) newErrors.title = "Title is required.";
-    if (options.length < 2)
-      newErrors.options = "At least 2 options are required.";
-    if (!formattedDate) newErrors.formattedDate = "End time is required.";
-  
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-  
-    axiosClient
-      .put(`/polls/${pollId}`, {
-        title,
-        description,
-        end_time: formattedDate,
-        options: options.map((option) => ({
-          id: option.id,
-          content: option.content,
-        })),
-        type: hideResults ? "vote" : "sondage",
-      })
-      .then(() => {
-        navigate(`/polls/${pollId}`, {
-          state: { toastMessage: "Poll updated successfully" },
-        });
-      })
-      .catch(() => {
-        toast.error("Failed to update poll");
-      });
+  const validateField = (field, value) => {
+    if (field === "title" && !value.trim()) return "Title is required.";
+    if (field === "options" && options.some((opt) => !opt))
+      return "All options must be filled.";
+    if (field === "endTime" && !value) return "End time is required.";
+    return "";
   };
-  
+
+  const validateForm = () => {
+    const titleError = validateField("title", formValues.title);
+    const optionsError = validateField("options", options);
+    const endTimeError = validateField("endTime", endTime);
+
+    const hasErrors = titleError || optionsError || endTimeError;
+    setErrors({
+      title: titleError,
+      options: optionsError,
+      endTime: endTimeError,
+    });
+
+    return !hasErrors;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+    console.log('form validated')
+
+    const pollData = {
+      ...formValues,
+      type: hideResults ? "vote" : "sondage",
+      options,
+      end_time: endTime,
+    };
+    console.log(pollData)
+
+    try {
+      await axiosClient.put(`/polls/${pollId}`, pollData);
+      toast.success("Poll updated successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error updating poll. Please try again.");
+    }
+  };
 
   return (
     <div className="pb-16">
@@ -103,9 +115,9 @@ const EditPoll = () => {
           <Input
             id="title"
             placeholder="Enter poll title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={formValues.title}
             className={cn("flex-1", errors.title && "border-red-500")}
+            onChange={(e) => handleInputChange("title", e.target.value)}
           />
           {errors.title && (
             <p className="text-red-500 text-sm">{errors.title}</p>
@@ -119,11 +131,7 @@ const EditPoll = () => {
             <div key={index} className="flex items-center space-x-2">
               <Input
                 value={option.content}
-                onChange={(e) => {
-                  const updatedOptions = [...options];
-                  updatedOptions[index].content = e.target.value;
-                  setOptions(updatedOptions);
-                }}
+                onChange={(e) => handleOptionChange(index, e.target.value)}
                 placeholder={`Option ${index + 1}`}
                 className={cn("flex-1", errors.options && "border-red-500")}
               />
@@ -147,17 +155,13 @@ const EditPoll = () => {
         </div>
 
         {/* End Time Picker */}
-        <div className="flex flex-col space-y-2">
-          <label htmlFor="endTime" className="text-sm font-medium">
-            End Time
-          </label>
-          <DateTimePicker24h
-            onChange={(formattedDate) => setEndTime(formattedDate)}
-          />
-          {errors.formattedDate && (
-            <p className="text-red-500 text-sm">{errors.formattedDate}</p>
-          )}
-        </div>
+        <DateTimePicker24h
+  initialDate={endTime}  // Pass the end_time as initialDate
+  onChange={(formattedDate) => {
+    // Handle the formatted date when the user selects or changes it
+    console.log("Selected Date:", formattedDate);
+  }}
+/>
 
         {/* Description Field */}
         <div className="flex flex-col space-y-2">
@@ -167,8 +171,8 @@ const EditPoll = () => {
           <Textarea
             id="description"
             placeholder="Describe your poll"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={formValues.description}
+            onChange={(e) => handleInputChange("description", e.target.value)}
           />
         </div>
 

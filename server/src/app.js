@@ -4,6 +4,7 @@ const cors =  require("cors");
 
 const authRoutes =  require("./routes/authRoutes.js");
 const pollRoutes = require("./routes/pollRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 /**
  * midleware for protected routes (or any route that requires authentication, authenticated user)
@@ -43,6 +44,7 @@ app.use(
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/polls", pollRoutes);
+app.use("/api/users", userRoutes);
 // localhost:PORT/api/polls
 // localhost:PORT/api/polls/:id
 

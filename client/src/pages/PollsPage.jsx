@@ -1,16 +1,14 @@
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
 import Poll from "@/components/Poll";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useGetNewPopularPolls } from "@/services/queries";
 import { ChevronLeft, Loader2 } from "lucide-react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function PollsPage() {
   const {user} = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const {
     data,
     fetchNextPage,
@@ -20,14 +18,6 @@ export default function PollsPage() {
     hasNextPage,
   } = useGetNewPopularPolls();
 
-    useEffect(() => {
-      if (location.state?.toastMessage) {
-        toast.success(location.state.toastMessage);
-        location.state.toastMessage = null
-        // Clear the state after showing the toast
-        navigate(location.pathname, { replace: true });
-      }
-    }, [location, navigate]);
   const navigateBack = () => {
     const hasHistory = window.history.state !== null;
     navigate(hasHistory ? -1 : "/polls");

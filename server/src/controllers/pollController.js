@@ -2,6 +2,62 @@ const db = require("../config/database");
 const { formatDistanceToNow } = require("date-fns");
 const getUserId = require("../lib/utils");
 
+const getPollsByUserId = (req, res) => {
+  const { userId } = req.params;
+
+  // Query to fetch polls created by a specific user
+  const pollsQuery = `
+    SELECT 
+      polls.id AS poll_id, 
+      polls.title,
+      polls.description, 
+      polls.type, 
+      polls.end_time, 
+      polls.created_at, 
+      polls.created_by, 
+      users.username AS creator_username, 
+      users.img AS creator_img,
+      DATE_FORMAT(polls.created_at, '%Y-%m-%d %H:%i:%s') AS created_at_formatted
+    FROM 
+      polls
+    LEFT JOIN 
+      users ON polls.created_by = users.id
+    WHERE 
+      polls.created_by = ?
+    ORDER BY 
+      polls.created_at DESC
+  `;
+
+  db.query(pollsQuery, [userId], (err, results) => {
+    if (err) {
+      console.error("Error fetching polls:", err.message);
+      return res
+        .status(500)
+        .json({ error: "Database error", details: err.message });
+    }
+
+    // Transform the results into a structured format
+    const polls = results.map((row) => ({
+      id: row.poll_id,
+      title: row.title,
+      description: row.description,
+      type: row.type,
+      end_time: row.end_time,
+      created_at: row.created_at,
+      created_by: row.created_by,
+      created_at_formatted: row.created_at_formatted,
+      creator: {
+        id: row.created_by,
+        username: row.creator_username,
+        img: row.creator_img,
+      },
+    }));
+
+    res.status(200).json(polls);
+  });
+};
+
+
 const getPolls = (req, res) => {
   const { page, limit, filter } = req.query;
   if (filter === "popular_active") {
@@ -287,7 +343,6 @@ const editPoll = (req, res) => {
         return res.status(404).json({ message: "Poll not found" });
       }
 
-      const uniqueOptions = [...new Set(options)];
       const deleteOldOptionsQuery = `DELETE FROM options WHERE poll_id = ?`;
       const insertNewOptionsQuery = `INSERT INTO options (content, poll_id) VALUES ?`;
 
@@ -299,7 +354,9 @@ const editPoll = (req, res) => {
             .json({ message: "Failed to update poll options" });
         }
 
-        const newOptions = uniqueOptions.map((option) => [option, pollId]);
+        // Extract the `content` from each option object for insertion
+        const newOptions = options.map((option) => [option.content, pollId]);
+
         db.query(insertNewOptionsQuery, [newOptions], (insertErr) => {
           if (insertErr) {
             console.error(insertErr);
@@ -316,6 +373,7 @@ const editPoll = (req, res) => {
     }
   );
 };
+
 
 const deletePoll = (req, res) => {
   const pollId = req.params.id;
@@ -571,9 +629,9 @@ const getVoteStatistiques = (req, res) => {
   });
 };
 
+
 module.exports = {
   createPoll,
-  getPolls,
   editPoll,
   deletePoll,
   getPolls,
@@ -581,4 +639,5 @@ module.exports = {
   votePoll,
   getVoteStatistiques,
   paginatPolls,
+  getPollsByUserId
 }

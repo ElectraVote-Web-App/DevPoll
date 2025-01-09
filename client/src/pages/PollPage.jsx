@@ -14,39 +14,41 @@ import {
 import { VoteBars } from "@/components/VoteBars";
 import { useGetPollById } from "@/services/queries";
 import { Info } from "lucide-react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 import NotFound from "./NotFound";
 import { Button } from "@/components/ui/button";
-
-const fetchPollCreatorInfo = (pollId) => {
-  return { creatorId: "123", username: "Moumen" };
-};
-
-const deletePoll = (pollId) => {
-  console.log(`Poll with ID ${pollId} deleted.`);
-  return true;
-};
+import { useAuth } from "@/context/AuthContext";
+import axiosClient from "@/http/axiosConfig"; // Replace with your axios config
 
 function PollPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [pollCreator, setPollCreator] = useState(null);
   const [isCreator, setIsCreator] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const currentUser = "123";
+  const { user } = useAuth();
+  const currentUser = user?.id; // Ensure `user` exists
   const { data: poll, isLoading, isError, error } = useGetPollById(id);
   const { width, height } = useWindowSize();
+  const location = useLocation();
 
   useEffect(() => {
-    const creatorInfo = fetchPollCreatorInfo(id);
-    setPollCreator(creatorInfo);
-    setIsCreator(creatorInfo.creatorId === currentUser);
-  }, [id]);
-  console.log(poll?.creator?.img);
+    if (location.state?.toastMessage) {
+      toast.success(location.state.toastMessage);
+      setTimeout(() => {
+        navigate(location.pathname, { replace: true });
+      }, 2000);
+    }
+  }, [location, navigate]);
+
+  useEffect(() => {
+    if (poll && poll.creator) {
+      setIsCreator(String(poll.creator.id) === String(currentUser));
+    }
+  }, [poll, currentUser]);
 
   if (isNaN(parseInt(id))) {
     return <NotFound />;
@@ -57,14 +59,17 @@ function PollPage() {
   if (isError) return <div>Error: {error.message}</div>;
 
   const handleDelete = () => {
-    const success = deletePoll(id);
-    if (success) {
-      navigate("/polls", {
-        state: { toastMessage: "Poll deleted successfully" },
+    axiosClient
+      .delete(`/polls/${id}`)
+      .then(() => {
+        toast.success("Poll deleted successfully");
+        navigate("/me", {
+          state: { toastMessage: "Poll deleted successfully" },
+        });
+      })
+      .catch(() => {
+        toast.error("Failed to delete the poll. Please try again.");
       });
-    } else {
-      toast.error("Failed to delete the poll. Please try again.");
-    }
   };
 
   return (
@@ -76,7 +81,7 @@ function PollPage() {
             <div className="flex items-center gap-x-2">
               <PollProfile
                 pic={`/avatars/${poll?.creator?.img}`}
-                username={pollCreator?.username}
+                username={poll?.creator?.username}
                 className="bg-gray-50 p-2 self-start"
               />
               <div className="text-xs text-gray-500 italic">
@@ -98,7 +103,7 @@ function PollPage() {
           {poll.options.length > 0 && poll.type === "vote" && (
             <>
               <VoteBars poll={poll} options={poll.options} />
-              {poll.end_time > new Date().toISOString() && (
+              {new Date(poll.end_time) > new Date() && (
                 <div className="flex items-start sm:items-center gap-x-1 my-2">
                   <Info size="14" className="stroke-gray-600 mt-1 sm:mt-0" />
                   <span className="text-gray-500 text-xs">
@@ -111,7 +116,7 @@ function PollPage() {
           )}
         </CardContent>
         <CardFooter>
-          {isCreator ? (
+          {isCreator && (
             <div className="flex justify-end gap-2 w-full">
               <Link to={`/polls/edit/${id}`}>
                 <Button
@@ -129,13 +134,6 @@ function PollPage() {
                 Delete
               </Button>
             </div>
-          ) : (
-            <Button
-              className="rounded-xl w-full bg-blue-500 hover:bg-blue-600"
-              size="lg"
-            >
-              Vote
-            </Button>
           )}
         </CardFooter>
       </Card>
@@ -146,7 +144,7 @@ function PollPage() {
           onCancel={() => setShowDeleteDialog(false)}
         />
       )}
-      {poll.end_time < new Date().toISOString() && (
+      {new Date(poll.end_time) < new Date() && (
         <Confetti width={width} height={height} />
       )}
     </section>

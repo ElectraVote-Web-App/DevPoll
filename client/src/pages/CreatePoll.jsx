@@ -8,8 +8,10 @@ import { cn } from "@/lib/utils";
 import BackButton from "@/components/BackButton";
 import axiosClient from "@/http/axiosConfig";
 import { DateTimePicker24h } from "@/components/ui/DateTimePicker24h";
+import { useAuth } from "@/context/AuthContext";
 
 const CreatePoll = () => {
+  const { user } = useAuth();
   const [options, setOptions] = useState(() => ["", ""]);
   const [hideResults, setHideResults] = useState(false);
   const [errors, setErrors] = useState({});
@@ -62,9 +64,11 @@ const CreatePoll = () => {
       type: hideResults ? "vote" : "sondage",
       options,
       end_time: endTime,
+      created_by : user.id
     };
     console.log(pollData)
     try {
+      
       await axiosClient.post("/polls", pollData);
       toast.success("Poll created successfully!");
       // Reset form values after successful submission

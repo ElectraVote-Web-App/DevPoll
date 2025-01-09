@@ -49,7 +49,7 @@ const defaultValues = {
   username: "username",
   bio: "I own a computer.",
   email: "example@mail.com",
-  avatar: "", // Add default avatar value
+  avatar: "", 
   urls: [
     { value: "https://shadcn.com" },
     { value: "http://twitter.com/shadcn" },

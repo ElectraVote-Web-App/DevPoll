@@ -46,7 +46,7 @@ function App() {
 
         <Route element={<AuthLayout />} >
           <Route path="/polls/create" element={<CreatePoll/>} />
-          <Route path="/polls/edit/:id" element={<EditPoll/>} />
+          <Route path="/polls/edit/:pollId" element={<EditPoll/>} />
           <Route path="/me" element={<ProfilePage/>} />
           <Route path="/me/settings" element={<SettingsLayout/>}>
             <Route path="" element={<SettingsProfilePage/>}/>
