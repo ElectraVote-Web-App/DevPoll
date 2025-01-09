@@ -30,8 +30,8 @@ const EditPoll = () => {
         const { title, description, end_time, options, type } = response.data;
         setTitle(title);
         setDescription(description);
-        setHideResults(type == "vote" ? true : false);
-        setEndTime(end_time); // Use raw ISO string as the `DateTimePicker24h` handles formatting
+        setHideResults(type === "vote");
+        setEndTime(new Date(end_time)); // Use raw ISO string as the `DateTimePicker24h` handles formatting
         setOptions(
           options.map((option) => ({ id: option.id, content: option.content }))
         );
@@ -40,6 +40,11 @@ const EditPoll = () => {
         toast.error("Failed to load poll details");
       });
   }, [pollId]);
+
+  const formatDateForMySQL = (isoDate) => {
+    const date = new Date(isoDate);
+    return date.toISOString().slice(0, 19).replace("T", " ");
+  };
 
   // Add a new option
   const handleAddOption = () => {
@@ -64,11 +69,12 @@ const EditPoll = () => {
       return;
     }
   
+    const mysqlFormattedDate = formatDateForMySQL(formattedDate);
     axiosClient
       .put(`/polls/${pollId}`, {
         title,
         description,
-        end_time: formattedDate,
+        end_time: mysqlFormattedDate,
         options: options.map((option) => ({
           id: option.id,
           content: option.content,
@@ -152,7 +158,11 @@ const EditPoll = () => {
             End Time
           </label>
           <DateTimePicker24h
-            onChange={(formattedDate) => setEndTime(formattedDate)}
+            date={formattedDate}
+            onChange={(formattedDate) => {
+              console.log("Selected Date:", formattedDate);
+              setEndTime(new Date(formattedDate));
+            }}
           />
           {errors.formattedDate && (
             <p className="text-red-500 text-sm">{errors.formattedDate}</p>

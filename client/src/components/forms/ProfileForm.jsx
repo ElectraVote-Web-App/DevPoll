@@ -73,7 +73,6 @@ export function ProfileForm() {
   };
 
   function onSubmit(data) {
-    console.log("profile updated");
     toast.success(
       <div>
         <p>You submitted the following values:</p>

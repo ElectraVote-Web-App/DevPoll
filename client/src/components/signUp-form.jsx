@@ -43,7 +43,6 @@ export function SignUpForm({ onSignUpSuccess, className, ...props }) {
       if (selectedAvatar) {
         data.img = selectedAvatar;
       }
-      console.log(data);
       const response = await axios.post("/auth/signup", data);
       const { message } = response.data;
 

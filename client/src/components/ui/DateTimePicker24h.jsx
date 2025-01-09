@@ -3,9 +3,9 @@
 import * as React from "react";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import PropTypes from "prop-types";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -14,16 +14,24 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-export function DateTimePicker24h({ onChange }) {
-  const [date, setDate] = React.useState(null);
+export function DateTimePicker24h({ date: initialDate, onChange }) {
+  const [date, setDate] = React.useState(initialDate || null);
   const [isOpen, setIsOpen] = React.useState(false);
 
+  // Update internal state when the `initialDate` prop changes
+  React.useEffect(() => {
+    if (initialDate) {
+      setDate(new Date(initialDate));
+    }
+  }, [initialDate]);
+
   const hours = Array.from({ length: 24 }, (_, i) => i);
+
   const handleDateSelect = (selectedDate) => {
     if (selectedDate) {
       setDate(selectedDate);
-      const formattedDate = format(selectedDate, "yyyy-MM-dd HH:mm:ss");
-      onChange(formattedDate);  // Pass the formatted date to the parent
+      const formattedDate = selectedDate.toISOString();
+      onChange(formattedDate); // Pass the formatted date to the parent
     }
   };
 
@@ -37,7 +45,7 @@ export function DateTimePicker24h({ onChange }) {
       }
       setDate(newDate);
       const formattedDate = format(newDate, "yyyy-MM-dd HH:mm:ss");
-      onChange(formattedDate);  // Pass the updated formatted date to the parent
+      onChange(formattedDate); // Pass the updated formatted date to the parent
     }
   };
 
@@ -102,3 +110,8 @@ export function DateTimePicker24h({ onChange }) {
     </Popover>
   );
 }
+
+DateTimePicker24h.propTypes = {
+  date: PropTypes.instanceOf(Date),
+  onChange: PropTypes.func.isRequired,
+};

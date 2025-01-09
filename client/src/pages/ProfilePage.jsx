@@ -102,9 +102,11 @@ export default function ProfilePage() {
               <span className="text-lg font-bold">{userVotedPolls.length}</span> {/* Replace with actual vote count */}
             </div>
           </div>
-          <Button variant="default" className="mt-6 w-full">
-            <Link to={'/me/settings'}>Update</Link>
-          </Button>
+          <Link to={'/me/settings'} className="mt-6 w-full">
+            <Button variant="default" className="mt-6 w-full">
+              Update
+            </Button>
+          </Link>
         </div>
 
         {/* Right Polls and Activities Section */}
