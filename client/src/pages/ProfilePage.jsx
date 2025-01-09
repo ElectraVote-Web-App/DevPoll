@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import axiosClient from "@/http/axiosConfig";
 import { useAuth } from "@/context/AuthContext";
 import { toast, Toaster } from "sonner";
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -120,20 +121,33 @@ export default function ProfilePage() {
 
             {/* My Polls Tab */}
             <TabsContent value="my-polls">
-              <div className="space-y-4 mt-4">
-                {polls.length > 0 && polls.map((poll) => (
-                  <Poll key={poll.id} poll={poll} className="transition-opacity duration-500 ease-in-out" />
-                ))}
-              </div>
+              <ScrollArea className="h-[70vh] rounded-md border p-4">
+                <div className="space-y-4">
+                  {polls.length > 0 &&
+                    polls.map((poll) => (
+                      <Poll
+                        key={poll.id}
+                        poll={poll}
+                        className="transition-opacity duration-500 ease-in-out"
+                      />
+                    ))}
+                </div>
+              </ScrollArea>
             </TabsContent>
 
             {/* My Activities Tab */}
             <TabsContent value="my-activities">
-              <div className="space-y-4 mt-4">
-                {userVotedPolls.map((poll, index) => (
-                    <Poll key={index} poll={poll} className="transition-opacity duration-500 ease-in-out" />
-                ))}
-              </div>
+              <ScrollArea className="h-[70vh] rounded-md border p-4">
+                <div className="space-y-4">
+                  {userVotedPolls.map((poll, index) => (
+                    <Poll
+                      key={index}
+                      poll={poll}
+                      className="transition-opacity duration-500 ease-in-out"
+                    />
+                  ))}
+                </div>
+              </ScrollArea>
             </TabsContent>
           </Tabs>
         </div>
