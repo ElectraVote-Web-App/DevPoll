@@ -3,7 +3,6 @@
 /** @type {import('sequelize-cli').Seeder} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-
     const users = await queryInterface.sequelize.query("SELECT id FROM users", {
       type: queryInterface.sequelize.QueryTypes.SELECT,
     });
@@ -14,6 +13,7 @@ module.exports = {
       type: index % 2 === 0 ? "sondage" : "vote",
       description: `Description for poll ${index + 1}`,
       created_by: user.id,
+      created_at: new Date(),
     }));
 
     await queryInterface.bulkInsert("polls", pollsData, {});
