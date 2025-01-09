@@ -60,13 +60,13 @@ export default function ProfilePage() {
         setError(err.response?.data?.message || "Error fetching user voted polls.");
       }
     }
-
     fetchPolls();
     fetchUserProfile();
     fetchUserVotedPolls();
     
     
   }, [userId]);
+  console.log(profile)
   
   if (error) {
     return <p>{error}</p>;

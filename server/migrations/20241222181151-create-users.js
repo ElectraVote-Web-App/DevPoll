@@ -28,6 +28,11 @@ module.exports = {
         allowNull: true,
         defaultValue: '',
       },
+      bio: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: '',
+      },
       created_at: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
