@@ -71,7 +71,7 @@ export default function ProfilePage() {
   if (error) {
     return <p>{error}</p>;
   }
-console.log(userVotedPolls)
+  
   return (
     <>
       <BackButton />
@@ -130,8 +130,8 @@ console.log(userVotedPolls)
             {/* My Activities Tab */}
             <TabsContent value="my-activities">
               <div className="space-y-4 mt-4">
-                {userVotedPolls.map((poll) => (
-                    <Poll key={poll.id} poll={poll} className="transition-opacity duration-500 ease-in-out" />
+                {userVotedPolls.map((poll, index) => (
+                    <Poll key={index} poll={poll} className="transition-opacity duration-500 ease-in-out" />
                 ))}
               </div>
             </TabsContent>

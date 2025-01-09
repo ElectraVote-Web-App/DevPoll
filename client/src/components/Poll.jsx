@@ -19,8 +19,8 @@ const Poll = ({ poll }) => {
     }
   };
 
-  console.log(poll.end_time);
-  console.log(new Date(poll.end_time));
+  // console.log(poll.end_time);
+  // console.log(new Date(poll.end_time));
   const status = new Date(poll.end_time) < new Date() ? "closed" : "open";
 
   return (
