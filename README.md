@@ -1,6 +1,7 @@
 # DEVPOLL
 
-# 
+### Langues:
+* [English README](./README_EN/README.md)
 
 ## Table des matières
 
