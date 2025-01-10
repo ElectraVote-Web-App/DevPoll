@@ -605,8 +605,6 @@ const getVoteStatistiques = (req, res) => {
       return res.status(500).json({ error: "Database error", details: err.message });
     }
 
-    // Log results for debugging
-    console.log("Vote statistics results:", results);
 
     if (!results || results.length === 0) {
       // If no results, return an empty array

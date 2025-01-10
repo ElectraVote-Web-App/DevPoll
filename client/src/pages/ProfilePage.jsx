@@ -67,7 +67,6 @@ export default function ProfilePage() {
     
     
   }, [userId]);
-  console.log(profile)
   
   if (error) {
     return <p>{error}</p>;
@@ -76,9 +75,9 @@ export default function ProfilePage() {
   return (
     <>
       <BackButton />
-      <div className="container mx-auto flex gap-6">
+      <div className="container mx-auto flex flex-col lg:flex-row gap-6 p-4">
         {/* Left Profile Section */}
-        <div className="w-1/3 bg-white shadow-md rounded-lg p-4 sticky top-4">
+        <div className="w-full lg:w-1/3 bg-white shadow-md rounded-lg p-4 lg:sticky lg:top-4">
           <div className="flex flex-col items-center">
             {profile && (
               <Avatar className="h-20 w-20 my-4 transition-transform transform hover:scale-110 duration-300 ease-in-out">
@@ -110,7 +109,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Right Polls and Activities Section */}
-        <div className="w-2/3 h-[80vh] overflow-y-auto">
+        <div className="w-full lg:w-2/3 h-[80vh] overflow-y-auto">
           <Tabs defaultValue="my-polls" className="w-full">
             <TabsList className="sticky top-0 bg-blue-50 z-10 shadow-md grid w-full grid-cols-2">
               <TabsTrigger value="my-polls" className="transition-all duration-300 ease-in-out hover:bg-blue-100">

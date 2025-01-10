@@ -107,7 +107,6 @@ const Home = () => {
 
   const { active_polls_count, polls } = data;
   const trunc_polls = polls.map(poll => poll.poll_title.length > 10 ? {...poll, poll_title: poll.poll_title.substring(0, 10)+'...'} : poll);
-  console.log(trunc_polls);
   /*
     -> POLL OBJECT STRUCTURE <- 
     creator_img,

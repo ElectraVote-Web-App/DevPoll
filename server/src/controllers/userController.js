@@ -4,7 +4,6 @@ const db = require("../config/database");
 // Get user profile by userId
 const getUserProfile = (req, res) => {
   const { userId } = req.params;
-  console.log(userId);
 
   // Query to fetch the user profile data
   const query = `
@@ -87,7 +86,7 @@ const getUserVotedPolls = (req, res) => {
 
 const updateUserProfile = (req, res) => {
   const { userId } = req.params;
-  const { username, email, bio, avatar } = req.body;
+  const { username, email, bio, img } = req.body;
 
   // Validate input
   if (!username || !email) {
@@ -103,7 +102,7 @@ const updateUserProfile = (req, res) => {
     WHERE id = ?
   `;
 
-  const values = [username, email, bio || null, avatar || null, userId];
+  const values = [username, email, bio || null, img || null, userId];
 
   db.query(query, values, (err, results) => {
     if (err) {
@@ -119,7 +118,7 @@ const updateUserProfile = (req, res) => {
 
     res.status(200).json({
       message: "Profile updated successfully.",
-      updatedFields: { username, email, bio, avatar },
+      updatedFields: { username, email, bio, img },
     });
   });
 };
