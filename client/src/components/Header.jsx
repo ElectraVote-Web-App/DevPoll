@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -24,19 +24,20 @@ import { cn } from "@/lib/utils";
 
 export default function Header() {
   const { user, logout: handleLogout } = useAuth();
+  const navigate = useNavigate();
 
   const notifications = [
     {
-      title: "New Poll from John Doe!",
+      title: "New Poll from Lexus!",
+      description: "30 minutes ago",
+    },
+    {
+      title: "New Poll from Garett81!",
       description: "1 hour ago",
     },
     {
-      title: "New Poll from John Doe!",
+      title: "New Poll from Otto_Nolan97!",
       description: "1 hour ago",
-    },
-    {
-      title: "New Poll from John Doe!",
-      description: "2 hours ago",
     },
   ];
 
@@ -68,9 +69,9 @@ export default function Header() {
         <div className="flex gap-x-6 items-center">
           <DropdownMenu>
             <DropdownMenuTrigger className="relative cursor-pointer">
-              {
-                newNotif && (<div className="bg-red-500 absolute w-2 aspect-square rounded-full top-0 right-0"></div>)
-              }
+              {newNotif && (
+                <div className="bg-red-500 absolute w-2 aspect-square rounded-full top-0 right-0"></div>
+              )}
               <Bell size={22} />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-transparent border-transparent shadow-none">
@@ -80,7 +81,6 @@ export default function Header() {
                   <CardDescription>You have 3 unread messages.</CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-4">
-
                   <div>
                     {notifications.map((notification, index) => (
                       <div
@@ -120,14 +120,24 @@ export default function Header() {
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Link to="/me">Profile</Link>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => {
+                  navigate("/me");
+                }}
+              >
+                Profile
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link to="/me/settings">Settings</Link>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => {
+                  navigate("/me/settings");
+                }}
+              >
+                Settings
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link to="/about">About</Link>
+              <DropdownMenuItem className="cursor-pointer" onClick={() => {navigate('/about')}}>
+                About
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                 <LogoutDialog onConfirm={handleLogout} />
