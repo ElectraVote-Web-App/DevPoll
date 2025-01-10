@@ -148,7 +148,7 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>Avatar</FormLabel>
               <FormControl>
-                <div className="flex space-x-6">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                   {Array.from({ length: 6 }).map((_, index) => (
                     <div
                       key={index}
