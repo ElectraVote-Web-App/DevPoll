@@ -13,18 +13,18 @@ const sidebarNavItems = [
     title: "Account",
     href: "/me/settings/account",
   },
-  {
-    title: "Appearance",
-    href: "/me/settings/appearance",
-  },
+  // {
+  //   title: "Appearance",
+  //   href: "/me/settings/appearance",
+  // },
   {
     title: "Notifications",
     href: "/me/settings/notifications",
   },
-  {
-    title: "Display",
-    href: "/me/settings/display",
-  },
+  // {
+  //   title: "Display",
+  //   href: "/me/settings/display",
+  // },
 ];
 
 export default function SettingsLayout({ children }) {

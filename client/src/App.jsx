@@ -17,6 +17,7 @@ import SettingsProfilePage from "./components/forms/SettingsProfilePage";
 import SettingsNotificationsPage from "./components/forms/notifications/SettingsNotificationsPage";
 import SettingsAccountPage from "./components/forms/account/SettingsAccountPage";
 import ProfilePage from "./pages/ProfilePage";
+import AboutPage from "./pages/AboutPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,7 +42,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/polls" element={<PollsPage />} />
           <Route path="/polls/:id" element={<PollPage/>} />
-          <Route path="/about" element={<h1>Write Docs here...</h1>} />
+          <Route path="/about" element={<AboutPage/>} />
         </Route>
 
         <Route element={<AuthLayout />} >
@@ -49,7 +50,7 @@ function App() {
           <Route path="/polls/edit/:pollId" element={<EditPoll/>} />
           <Route path="/me" element={<ProfilePage/>} />
           <Route path="/me/settings" element={<SettingsLayout/>}>
-            <Route path="" element={<SettingsProfilePage/>}/>
+            <Route index element={<SettingsProfilePage/>}/>
             <Route path="notifications" element={<SettingsNotificationsPage/>}/>
             <Route path="account" element={<SettingsAccountPage/>}></Route>
           </Route>
