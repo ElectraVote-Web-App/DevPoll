@@ -26,14 +26,20 @@ const Poll = ({ poll }) => {
   return (
     <div className="bg-white text-gray-900 p-4 rounded-xl shadow-lg space-y-4 hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
       <div className="flex justify-between items-center">
-        <PollProfile pic={`./public/avatars/${poll.creator.img}`} username={poll.creator.username} />
+        <PollProfile
+          pic={`./public/avatars/${poll.creator.img}`}
+          username={poll.creator.username}
+        />
         <div className="flex gap-x-2">
           {status === "closed" && (
             <p className="bg-red-200 text-red-800 select-none py-1.5 px-3 rounded-full text-sm flex items-center">
               Closed
             </p>
           )}
-          <button onClick={sharePoll} className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 flex justify-center items-center">
+          <button
+            onClick={sharePoll}
+            className="p-2 rounded-full hover:bg-[#277EBD] bg-blue-500 flex justify-center items-center"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -46,11 +52,13 @@ const Poll = ({ poll }) => {
           </button>
         </div>
       </div>
-      <p className="font-medium text-gray-800">{poll.title.length > 30 ? poll.title.slice(0, 30)+"..." : poll.title}</p>
+      <p className="font-medium text-gray-800">
+        {poll.title.length > 30 ? poll.title.slice(0, 30) + "..." : poll.title}
+      </p>
       <span className="text-sm text-gray-500">{poll.created_at_formatted}</span>
       <Button
         asChild
-        className="flex w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-none mt-3"
+        className="flex w-full rounded-lg hover:bg-[#277EBD] bg-blue-500 text-white shadow-none mt-3"
       >
         <Link to={`/polls/${poll.id}`}>Tap to see</Link>
       </Button>

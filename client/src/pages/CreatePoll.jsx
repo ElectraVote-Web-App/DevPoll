@@ -123,9 +123,8 @@ const CreatePoll = () => {
               />
               {options.length > 2 && (
                 <Button
-                  variant="destructive"
                   onClick={() => handleRemoveOption(index)}
-                  className="bg-black text-white"
+                  variant="destructive"
                 >
                   Remove
                 </Button>
@@ -175,7 +174,7 @@ const CreatePoll = () => {
               Hide Results
             </label>
           </div>
-          <Button onClick={handleSubmit} className="bg-black text-white mt-4">
+          <Button onClick={handleSubmit} className="hover:bg-[#277EBD] bg-blue-500 text-white mt-4">
             Create Poll
           </Button>
         </div>

@@ -112,11 +112,11 @@ export default function ProfilePage() {
         {/* Right Polls and Activities Section */}
         <div className="w-2/3 h-[80vh] overflow-y-auto">
           <Tabs defaultValue="my-polls" className="w-full">
-            <TabsList className="sticky top-0 bg-white z-10 shadow-md grid w-full grid-cols-2">
-              <TabsTrigger value="my-polls" className="transition-all duration-300 ease-in-out hover:bg-gray-100">
+            <TabsList className="sticky top-0 bg-blue-50 z-10 shadow-md grid w-full grid-cols-2">
+              <TabsTrigger value="my-polls" className="transition-all duration-300 ease-in-out hover:bg-blue-100">
                 My Polls
               </TabsTrigger>
-              <TabsTrigger value="my-activities" className="transition-all duration-300 ease-in-out hover:bg-gray-100">
+              <TabsTrigger value="my-activities" className="transition-all duration-300 ease-in-out hover:bg-blue-100">
                 My Activities
               </TabsTrigger>
             </TabsList>

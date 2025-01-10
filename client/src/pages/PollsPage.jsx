@@ -52,7 +52,7 @@ export default function PollsPage() {
         onClick={fetchNextPage}
         variant="outline"
         disabled={isFetchingNextPage}
-        className="rounded-3xl" size='lg'
+        className="rounded-3xl transition-shadow duration-300 hover:shadow-xl shadow-md" size='lg'
       >
         {isFetchingNextPage ? <>Loading more...{" "}<Loader2 className="animate-spin h-4 w-4"/> </> : 'Show more'}
       </Button>

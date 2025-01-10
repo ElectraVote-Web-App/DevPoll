@@ -36,9 +36,9 @@ const CountDown = ({ end_time }) => {
     !timeLeft.seconds
   ) {
     return (
-      <p className="bg-[#FF5A5A] text-white select-none py-2 px-3 rounded-full text-sm flex items-center">
-        Closed
-      </p>
+      <p className="bg-red-200 text-red-800 select-none py-2 px-3 rounded-full text-sm flex items-center">
+              Closed
+            </p>
     );
   }
 

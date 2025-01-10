@@ -137,7 +137,6 @@ const EditPoll = () => {
                 <Button
                   variant="destructive"
                   onClick={() => handleRemoveOption(index)}
-                  className="bg-black text-white"
                 >
                   Remove
                 </Button>
@@ -194,7 +193,7 @@ const EditPoll = () => {
               Hide Results
             </label>
           </div>
-          <Button onClick={handleSubmit} className="bg-black text-white mt-4">
+          <Button onClick={handleSubmit} className="bg-green-500 hover:bg-green-600 mt-4">
             Update Poll
           </Button>
         </div>
