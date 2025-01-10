@@ -160,7 +160,6 @@ const EditPoll = () => {
           <DateTimePicker24h
             date={formattedDate}
             onChange={(formattedDate) => {
-              console.log("Selected Date:", formattedDate);
               setEndTime(new Date(formattedDate));
             }}
           />

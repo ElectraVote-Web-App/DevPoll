@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       try {
         const decodedUser = jwtDecode(token);
-        console.log(decodedUser);
         setUser(decodedUser); 
       } catch (error) {
         console.error("Failed to decode token:", error);
@@ -39,9 +38,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("token", token);
     const decodedUser = jwtDecode(token);
     setUser(decodedUser); 
-    console.log('user');
-    console.log(user);
-    
   };
 
   const logout = () => {

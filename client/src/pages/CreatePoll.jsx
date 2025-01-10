@@ -66,7 +66,6 @@ const CreatePoll = () => {
       end_time: endTime,
       created_by : user.id
     };
-    console.log(pollData)
     try {
       
       await axiosClient.post("/polls", pollData);
@@ -79,7 +78,6 @@ const CreatePoll = () => {
       setHideResults(false);
     } catch (error) {
       console.error(error);
-      console.log(endTime);
       toast.error("Error creating poll. Please try again.");
     }
   };

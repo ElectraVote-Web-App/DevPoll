@@ -67,7 +67,6 @@ export default function ProfilePage() {
     
     
   }, [userId]);
-  console.log(profile)
   
   if (error) {
     return <p>{error}</p>;
