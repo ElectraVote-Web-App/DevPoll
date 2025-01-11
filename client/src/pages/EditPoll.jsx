@@ -31,7 +31,7 @@ const EditPoll = () => {
         setTitle(title);
         setDescription(description);
         setHideResults(type === "vote");
-        setEndTime(new Date(end_time)); // Use raw ISO string as the `DateTimePicker24h` handles formatting
+        setEndTime(new Date(end_time));
         setOptions(
           options.map((option) => ({ id: option.id, content: option.content }))
         );

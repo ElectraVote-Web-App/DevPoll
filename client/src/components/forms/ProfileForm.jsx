@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import { useAuth } from "@/context/AuthContext";
+import axiosClient from "@/http/axiosConfig";
 import { cn } from "@/lib/utils";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -18,74 +20,88 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"; // Import the ShadCN Avatar components
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const profileFormSchema = z.object({
   username: z
     .string()
-    .min(2, {
-      message: "Username must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "Username must not be longer than 30 characters.",
-    }),
+    .min(2, { message: "Username must be at least 2 characters." })
+    .max(30, { message: "Username must not be longer than 30 characters." }),
   email: z
-    .string({
-      required_error: "Please select an email to display.",
-    })
+    .string({ required_error: "Please select an email to display." })
     .email(),
   bio: z.string().max(160).min(4),
-  avatar: z.string().optional(), // Add the avatar field
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      })
-    )
-    .optional(),
+  avatar: z.string().optional(),
 });
 
-const defaultValues = {
-  username: "username",
-  bio: "I own a computer.",
-  email: "example@mail.com",
-  avatar: "", 
-  urls: [
-    { value: "https://shadcn.com" },
-    { value: "http://twitter.com/shadcn" },
-  ],
-};
-
 export function ProfileForm() {
+  const [loading, setLoading] = useState(true);
   const form = useForm({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
+    defaultValues: {
+      username: "",
+      email: "",
+      bio: "",
+      avatar: "",
+    },
     mode: "onChange",
   });
 
-  const { fields, append } = useFieldArray({
-    name: "urls",
-    control: form.control,
-  });
+  const {user} = useAuth()
+  const userId = user.id
+  // Fetch user data and initialize the form
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const response = await axiosClient.get(`/users/${userId}`);
+        const data = response.data;
+
+        form.reset({
+          username: data.username || "",
+          email: data.email || "",
+          bio: data.bio || "",
+          avatar: data.img ? `/public/avatars/${data.img}` : "",
+        });
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        toast.error("Failed to load profile data.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUserData();
+  }, [form, userId]);
 
   const handleAvatarChange = (avatarPath) => {
     form.setValue("avatar", avatarPath);
   };
-
   function onSubmit(data) {
-    toast.success(
-      <div>
-        <p>You submitted the following values:</p>
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      </div>
-    );
+    const normalizedData = {
+      ...data,
+      img: data.avatar ? data.avatar.split("/").pop() : "",
+    };
+  
+    axiosClient
+      .put(`/users/${userId}`, normalizedData)
+      .then(() => {
+        toast.success("Profile updated successfully!");
+      })
+      .catch((error) => {
+        console.error("Failed to update profile:", error);
+        toast.error("Failed to update profile.");
+      });
+  }
+  
+
+  if (loading) {
+    return <p>Loading...</p>; 
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* Username Field */}
         <FormField
           control={form.control}
           name="username"
@@ -103,6 +119,8 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
+
+        {/* Email Field */}
         <FormField
           control={form.control}
           name="email"
@@ -118,29 +136,8 @@ export function ProfileForm() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Bio</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                You can <span>@mention</span> other users and organizations to
-                link to them.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        {/* Avatar Selection Section */}
+        {/* Avatar Selection */}
         <FormField
           control={form.control}
           name="avatar"
@@ -173,7 +170,6 @@ export function ProfileForm() {
                         />
                         <AvatarFallback>{`Avatar ${index + 1}`}</AvatarFallback>
                       </Avatar>
-                      {/* Highlight the selected avatar with a badge or icon */}
                       {field.value ===
                         `/public/avatars/avatar${index + 1}.png` && (
                         <div className="absolute top-0 right-0 p-1 bg-blue-500 rounded-full text-white text-xs font-bold">
@@ -192,41 +188,32 @@ export function ProfileForm() {
           )}
         />
 
-        <div>
-          {fields.map((field, index) => (
-            <FormField
-              control={form.control}
-              key={field.id}
-              name={`urls.${index}.value`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className={cn(index !== 0 && "sr-only")}>
-                    URLs
-                  </FormLabel>
-                  <FormDescription className={cn(index !== 0 && "sr-only")}>
-                    Add links to your website, blog, or social media profiles.
-                  </FormDescription>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="mt-2"
-            onClick={() => append({ value: "" })}
-          >
-            Add URL
-          </Button>
-        </div>
+        {/* Bio Field */}
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bio</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Tell us a little bit about yourself"
+                  className="resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                You can <span>@mention</span> other users and organizations to
+                link to them.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button type="submit">Update profile</Button>
       </form>
-      <Toaster richColors/>
+      <Toaster richColors />
     </Form>
   );
 }

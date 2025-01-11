@@ -1,13 +1,11 @@
-// Assuming you're using Express and mysql2
 const db = require("../config/database");
 
 // Get user profile by userId
 const getUserProfile = (req, res) => {
   const { userId } = req.params;
 
-  // Query to fetch the user profile data
   const query = `
-    SELECT id, username, img, bio
+    SELECT id, username, img, bio, email
     FROM users
     WHERE id = ?
   `;
@@ -24,7 +22,6 @@ const getUserProfile = (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Send the user profile data as response
     res.json(results[0]);
   });
 };
@@ -88,14 +85,12 @@ const updateUserProfile = (req, res) => {
   const { userId } = req.params;
   const { username, email, bio, img } = req.body;
 
-  // Validate input
   if (!username || !email) {
     return res.status(400).json({
       message: "Username and email are required.",
     });
   }
 
-  // Query to update the user profile
   const query = `
     UPDATE users
     SET username = ?, email = ?, bio = ?, img = ?
