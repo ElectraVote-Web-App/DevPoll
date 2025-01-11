@@ -18,6 +18,37 @@
 
 ---
 
+## ScreenShots
+
+### Home Page
+![image](https://github.com/user-attachments/assets/18b2e189-d500-4944-9b81-6d6f0862f48f)
+
+### Polls Page
+![image](https://github.com/user-attachments/assets/a46292de-304b-4b90-934d-6e0ce91b81e3)
+
+### Closed Poll Page
+![image](https://github.com/user-attachments/assets/fd314e61-e406-486f-b24f-1a269868755a)
+
+### Vote Page
+![image](https://github.com/user-attachments/assets/badd4f7c-80dd-4fa2-b577-436939186ef6)
+
+### Sondage Page
+![image](https://github.com/user-attachments/assets/a6e56dc9-1f85-4bc0-8aaa-ed202f0062e4)
+
+### Profile Page
+![image](https://github.com/user-attachments/assets/6f892169-b82d-4f85-93e4-b157f3dc4b43)
+
+### Settings Page
+![image](https://github.com/user-attachments/assets/0fc4df32-6c95-4eab-bb4f-17b2d93f12eb)
+
+---
+
+## Video
+
+https://github.com/user-attachments/assets/c78bace0-a671-4ca0-9e7e-545cc18fad3f
+
+---
+
 ## Prérequis
 
 Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
